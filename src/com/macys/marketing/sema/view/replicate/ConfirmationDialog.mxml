@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+	      width="250" height="150"
+	      title="Confirmation Dialog"
+	      horizontalAlign="center"
+	      paddingLeft="15" paddingRight="15">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var message:String = "Default";
+			
+			public var callback:Function;
+			
+			public function close(event:Event):void
+			{
+				//this swallows the gesture 
+				mx.managers.PopUpManager.removePopUp(this);
+			}
+			
+			public function confirm(event:Event):void
+			{
+				callback.apply(this, [ event ]);
+				close(event);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Text text="{message}" />
+	<mx:HBox paddingTop="20">
+		<mx:Button label="Confirm" click="confirm(event)"/>
+		<mx:Button label="Cancel" click="close(event)"/>
+	</mx:HBox>
+	
+</mx:Panel>

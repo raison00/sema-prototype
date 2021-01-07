@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml" 	
+	xmlns:model="com.macys.marketing.sema.model.*" 
+	xmlns:testerview="com.macys.marketing.sema.view.serviceTester.*" 
+	xmlns:control="com.macys.marketing.sema.control.*"    
+    xmlns:customComps="CustomComps.*"
+
+	layout="vertical"
+	initialize="init()" creationComplete="postInit()">
+
+
+	<mx:HTTPService id="ServiceHostnameService" url="config/serviceHostname.xml" result="processServiceHostnameInfo(event);" resultFormat="xml" fault="showFault(event)"/>
+	<mx:HTTPService id="ServiceInfoService" url="config/serviceEndpoint.xml" result="processServiceEndpointInfo(event);" resultFormat="xml" fault="showFault(event)"/>
+
+	<control:Controller id="Controller"/> 
+    
+	<mx:ViewStack id="vs" selectedIndex="1" resizeToContent="true">
+	
+		<mx:Canvas id="app">
+			<testerview:ServiceTester id="serviceTester"/>			
+		</mx:Canvas>
+		
+		<customComps:Login id="loginScreen"/>
+		
+	</mx:ViewStack>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.AsyncToken;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.collections.ArrayCollection;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+		
+			public var userName:String = "Lenny";
+			public var model:SEMAModelLocator;
+			public var serviceRegistry:Dictionary = new Dictionary();
+			private var hostname:String;
+			private var targetHost:String;
+	
+			
+			private function init():void {
+				
+				// set desired host environment
+				targetHost = "INT";
+				
+				//initialize Service Configuration Registry
+				var configToken : AsyncToken = ServiceHostnameService.send();
+				
+				//Display Service Tester Initial View
+				view:serviceTester
+				
+				model = SEMAModelLocator.getInstance();
+			}
+			private function postInit():void
+			{
+				this.loginScreen.loginBtn.addEventListener(MouseEvent.CLICK,loginBtnClickHandler);				
+			}
+			private function processServiceHostnameInfo(event : ResultEvent):void {	
+				
+				var temp : XML = XML(event.result);
+				// populate hostname var. targetHost is set above in init()
+            	hostname = temp.ServiceHostname.(@envName == targetHost).toString();
+
+				//initialize Service Configuration Registry
+				var configToken : AsyncToken = ServiceInfoService.send();
+                trace("Service Hostname Configuration Successful:  " + hostname );
+                             
+			} 
+			private function processServiceEndpointInfo(event : ResultEvent):void {
+				
+				var temp : XML = XML(event.result);
+				var endPointCount : int = 0;
+				for each(var url : XML in temp.ServiceEndpointWsdl)
+                {                             
+                    serviceRegistry[url.@name.toString()] = hostname + url.toString();
+                    model.serviceRegistry[url.@name.toString()] = hostname + url.toString();
+                    endPointCount++;
+                }
+                trace("Service Enpoint Configuration Successful:  " + endPointCount + " Services Registered");
+                            
+			}
+			
+			private function showFault(event : FaultEvent):void {
+								
+				var strError:String = event.fault.faultString;      			    			    			    		
+				trace("Error Initializing Service Endpoint Configurations:" + strError);	
+				
+			}  
+			private function loginBtnClickHandler(e:MouseEvent):void
+			{
+				if(loginScreen.uname.text=="admin" && loginScreen.pwd.text=="admin"){
+					vs.selectedIndex = 0;
+				}
+				else { 
+					loginScreen.shake.play(); 
+					this.loginScreen.loginFaultText.visible=true;
+				}
+				
+			}
+			
+		]]>
+	</mx:Script>
+
+    
+    <mx:Style>
+        Button {
+            font-family: embeddedArialBold;
+        }
+        CheckBox {
+            font-family: embeddedArial;
+        }
+        PhysicsContainer {
+            font-family: embeddedArial;
+        }
+        Panel {
+            font-family: embeddedArialBold;    
+        }
+        
+        .panelTitle {
+            font-family: embeddedArialBold;    
+        }
+            
+    </mx:Style>
+	 
+</mx:Application>

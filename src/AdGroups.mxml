@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Ad Group Summary" 
+	paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	xmlns:flexlib="http://code.google.com/p/flexlib/" xmlns:custom="CustomComps.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;		  	
+			[Bindable] public var campaignsListData : ArrayCollection; 	
+		]]>
+	</mx:Script>
+ 	
+	<mx:Canvas width="100%" height="50">
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnSaveAdGroup" labelPlacement="right" 
+			x="8" icon="@Embed('../icons/save.png')" cornerRadius="5"  enabled="true" label="Save" tabIndex="2"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnEditAdGroup" labelPlacement="right" 
+			x="8" cornerRadius="5" enabled="true" label="Edit" tabIndex="1"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnCancelAdGroup" labelPlacement="right" 
+			x="121" cornerRadius="5" enabled="true" label="Cancel" tabIndex="3"/>
+	</mx:Canvas>
+	<mx:Panel x="10" y="54" width="100%" height="100%" layout="absolute" title="Summary" backgroundAlpha="0.2" cornerRadius="15" roundedBottomCorners="true" id="pnlAdGroupSummary">
+		<mx:Label x="21" y="17" text="Campaign: *" fontWeight="bold"/>
+		<mx:Text x="159" y="17" width="284" id="lblCampaignName" height="21"/>
+		
+		<mx:Label x="21" y="53" text="Ad Group Name: *" width="117" fontStyle="normal" fontWeight="bold"/>
+		<mx:TextInput x="159" y="51" width="284" id="txtAdGroupName" enabled="true" maxChars="50" tabIndex="4" backgroundDisabledColor="#FFFFFF"/>
+		
+		<mx:Label x="21" y="94" text="Default URL *" width="117" fontStyle="normal" fontWeight="bold"/>
+		<flexlib:PromptingTextInput prompt="http://www.macys.com" x="159" y="92"  width="284" id="txtAdGroupURL" enabled="true" maxChars="1024" tabIndex="5" backgroundDisabledColor="#FFFFFF"/>
+		
+		<mx:Label x="21" y="135" text="Status: *" width="117" fontStyle="normal" fontWeight="bold"/>
+		<mx:ComboBox  x="159" y="133" width="163" id="cmbAdGroupStatus" editable="false" selectedIndex="1" cornerRadius="0" tabIndex="6">
+			<mx:dataProvider>
+				<mx:String>Enabled</mx:String>
+				<mx:String>Paused</mx:String>
+				<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		
+		<mx:Label x="21" y="179" text="Maximum CPC Bid: *    $" width="145" fontStyle="normal" fontWeight="bold"/>
+		<custom:NumberInput x="159" y="177" id="txtAdGroupMaxCPC" enabled="true" width="163" tabIndex="7" backgroundDisabledColor="#FFFFFF" maxWholeNumberLength="2" maxExponentLength="2"/>
+		
+		<mx:Label x="21" y="218" text="Published Date " id="lblPubDate" fontWeight="bold" visible="true"/>
+		<mx:Text x="159" y="218" width="163" id="lblPublishedDate"/>
+		
+		<mx:Label x="21" y="259" text="Vendor Status" fontWeight="bold" id="lblVendorStatus"/>
+		<mx:Text x="159" y="259" width="163" id="lblVendorStatusRes" height="21"/>
+	</mx:Panel>
+</mx:VBox>

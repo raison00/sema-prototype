@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Author			: Zone24x7
+	Modified By		: David Frank (p139df2)
+	Created Date	: 2008/01/25
+	Modified Date	: 2008/04/11
+	Project			: SEMAServicesClient
+	Description 	: Master build file
+-->
+
+<project basedir="." default="help" name="SEMAPresentation">
+
+	<!--<property file="build.properties" />-->
+	<import file="${reference.build.files.path}/build_sema_common.xml" />
+
+	<!-- Target to set paths -->
+	<target name="setpath" description="DO NOT RUN DIRECTLY: Set the paths required to execute the build process">
+
+		<!-- Tomcat paths -->
+		<property name="tomcat.manager.url" value="${tomcat.url}/manager" />
+
+		<property name="build.home" value="${project.home}/build/client" />
+		<property name="build.classes.home" value="${build.home}/classes" />
+		<property name="build.localwar.classes.home" value="${project.home}/WebContent/WEB-INF/classes" />
+		<property name="build.localwar.lib.home" value="${project.home}/WebContent/WEB-INF/lib" />
+		<property name="build.war.home" value="${build.home}/war" />
+		<property name="build.war.classes.home" value="${build.war.home}/WEB-INF/classes" />
+		<property name="project.war.home" value="${project.home}/WebContent" />
+
+		<property name="build.flexunit.report.dir" value="${build.home}/flexunit/reports" />
+		<property name="build.flexunit.dir" value="${build.home}/flexunit" />
+
+		<property name="src.home" value="${project.home}/src" />
+		<property name="ui.config.file" value="${build.war.home}/xml/config.xml" />
+
+
+		<!-- Library paths -->
+		<property name="lib.home" value="${project.home}/libs" />
+		<property name="lib.common.home" value="${project.home}/../Codebase/libs" />
+		
+
+		<!-- Defines the class path -->
+		<path id="classpath">
+			<pathelement location="${java.home}/../lib/tools.jar" />
+			<fileset dir="${lib.home}">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="${lib.common.home}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<path id="source.path">
+			<pathelement location="${src.home}" />
+		</path>
+
+	</target>
+
+	<target name="clean" description="Clean the build folder">
+		<delete dir="${build.home}" includeEmptyDirs="true" />
+	</target>
+
+	<target name="setup" depends="clean" description="Create the required folders for build">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.classes.home}" />
+	</target>
+
+
+	<!--
+	<target name="update-project-webcontent" description="Generate source, compile them and copy to classes folder in webapp">
+		<delete dir="${build.localwar.classes.home}" />
+		<mkdir dir="${build.localwar.classes.home}" />
+
+		<copy todir="${build.localwar.classes.home}">
+			<fileset dir="${build.classes.home}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.localwar.lib.home}">
+			<fileset dir="${sunmetro.home}">
+				<include name="**/webservices-rt.jar" />
+			</fileset>
+		</copy>
+	</target>
+	-->
+
+	<target name="help" description="Help">
+		<echo message="Please run the main target" />
+	</target>
+
+	<target name="main" description="Main target of the SEMAServicesClient project build">
+		<antcall target="common" />
+	</target>
+
+	<target name="build-deploy" depends="setpath,setup" description="DO NOT RUN DIRECTLY: Logical sequence of targets to build the client  and deploy to Tomcat">
+
+		<echo>Using Project Home - ${project.home}</echo>
+		<echo>Using Build   Home - ${build.home}</echo>
+
+		<!-- Flags to execute sections in the build -->
+		<condition property="execute.unit.test.flag">
+			<istrue value="${execute.unit.test}" />
+		</condition>
+
+		<ant antfile="${reference.build.files.path}/build_flex.xml" target="flex.compile">
+			<property name="project.home" value="${project.home}" />
+			<property name="build.home" value="${build.home}" />
+			<property name="input.file.path" value="${project.home}/src/${flex.app.main.file}.mxml" />
+			<property name="output.file.path" value="${build.war.home}/${flex.app.main.file}.swf" />
+			<property name="generate.html.wrapper" value="true" />
+			<property name="source.home" value="${project.home}/src" />
+			<property name="war.home" value="${build.war.home}" />
+		</ant>
+
+		<antcall target="execute.unit.test" inheritrefs="true" />
+
+		<!-- Copy any xml configuration files -->
+		<copy todir="${build.war.home}">
+			<!-- New code to modify servicehostname.xml according to the current environment -->
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ExpandProperties"/>
+			</filterchain>
+			<!-- End of new code -->
+			<fileset dir="${project.home}/src/">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+		
+		<!-- New code to copy version information to the WebContent folder -->
+			<antcall target="copy-version-information" inheritRefs="true" /> <!-- Target code defined below -->
+		<!-- End of new code -->
+		
+		<!-- New code added to call the target required to copy the 'style' firectory under the 'src' directory into the'Webcontent' directory -->
+		<antcall target="copy-style-dir" inheritRefs="true" /> <!-- Target code defined below -->
+		<!-- End of new code -->
+		<antcall target="copy-war-contents" inheritRefs="true" />
+		<antcall target="update.service.urls" inheritRefs="true" />
+		
+		<antcall target="generate-war" inheritRefs="true">
+			<param name="build.war.file.name" value="${project.name}.war" />
+		</antcall>
+
+		<antcall target="deploy-to-tomcat" inheritRefs="true">
+			<param name="build.war.file.name" value="${project.name}.war" />
+			<param name="build.war.context.path" value="${project.name}" />
+			<param name="app.check.url" value="${tomcat.url}/${project.name}/${checkstatus.url}" />
+			<reference torefid="build.classpath" refid="classpath" />
+		</antcall>
+		
+		<!-- New code added to call the target required to change the ClearCase view's configspec to point to the previous/default value  -->
+		<antcall target="cc-defaultconfigspec" inheritRefs="true" /> <!-- Target code defined below -->
+		<!-- End of new code -->
+
+	</target>
+
+	<target name="execute.unit.test" description="DO NOT CALL DIRECTLY: Execute the unit test related tasks" if="execute.unit.test.flag">
+		<!-- Compile Flex unittest file -->
+		<ant antfile="${reference.build.files.path}/build_flex.xml" target="flex.compile">
+			<property name="project.home" value="${project.home}" />
+			<property name="build.home" value="${build.home}" />
+			<property name="input.file.path" value="${flex.app.test.input.file.path}/${flex.app.test.file}.mxml" />
+			<property name="output.file.path" value="${build.flexunit.dir}/${flex.app.test.file}.swf" />
+			<property name="source.home" value="${project.home}/src" />
+
+		</ant>
+
+		<!-- Execute Flex unittest file -->
+		<ant antfile="${reference.build.files.path}/build_flex.xml" target="flex.unittest">
+			<property name="project.home" value="${project.home}" />
+			<property name="build.home" value="${build.home}" />
+			<property name="flexunit.swf" value="${build.flexunit.dir}/${flex.app.test.file}.swf" />
+			<property name="generate.html.wrapper" value="false" />
+		</ant>
+
+	</target>
+
+	<target name="update.service.urls" description="DO NOT CALL DIRECTLY: Update the service URLs with the values in the build properties">
+		<echo>Updating the Webservice URLs</echo>
+		<taskdef classpathref="classpath" name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" />
+		
+		<!-- Change the XML file values -->
+		<xmltask source="${ui.config.file}" dest="${ui.config.file}">
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.adgroup.name}']/text()" withText="${ws.adgroup.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.adcopy.name}']/text()" withText="${ws.adcopy.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.keyword.name}']/text()" withText="${ws.keyword.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.campaign.name}']/text()" withText="${ws.campaign.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.portfolio.name}']/text()" withText="${ws.portfolio.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.portfoliogroup.name}']/text()" withText="${ws.portfoliogroup.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.adcopy.stats.name}']/text()" withText="${ws.adcopy.stats.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.keyword.stats.name}']/text()" withText="${ws.keyword.stats.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.adgroup.stats.name}']/text()" withText="${ws.adgroup.stats.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.campaign.stats.name}']/text()" withText="${ws.campaign.stats.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.keywordselect.name}']/text()" withText="${ws.keywordselect.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.account.name}']/text()" withText="${ws.account.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.replicate.entity.name}']/text()" withText="${ws.replicate.entity.url}" />
+			<replace path="/SEMAClientConfig/WebServiceURL[@wsName='${ws.campaign.exists.name}']/text()" withText="${ws.campaign.exists.url}" />
+		</xmltask>
+		
+	</target>
+	
+	<!-- New code added to copy the 'style' firectory under the 'src' directory into the'Webcontent' directory -->
+	<target name="copy-style-dir" description="DO NOT CALL DIRECTLY: Copying the 'style' directory into the project WebContent">
+		<copy todir="${project.war.home}" failonerror="false">
+			<fileset dir="${project.home}/src" />
+		</copy>
+	</target>
+
+	<!-- New code added to change the ClearCase view's configspec to point to the previous/default location -->
+	<target name="cc-defaultconfigspec" description="DO NOT CALL DIRECTLY: Changing the ClearCase configspec to the previous/default value">
+		<exec dir="${clearcase.viewpath}" executable="cleartool" failonerror="true">
+			<arg line="setcs clearcasedefault.configspec" />
+		</exec>
+		<exec dir="${clearcase.viewpath}" executable="cleartool" failonerror="true">
+			<arg line="catcs" />
+		</exec>
+	</target>
+	<!-- End of new code -->
+	
+	<!-- New code to copy the version information from the version.properties into the WebContent folder -->
+	<target name="copy-version-information" description="DO NOT CALL DIRECTLY: Copying the version information into the WebContent folder">
+		<property file="${project.home}/version.properties" />
+		<echo file="${project.war.home}/version.txt" message="*******  Version Information  *******${line.separator}${line.separator}${line.separator}" />
+		<echo file="${project.war.home}/version.txt" message="Release label: ${build-number}${line.separator}${line.separator}" append="true" />
+		<echo file="${project.war.home}/version.txt" message="Release built: ${build-date}${line.separator}${line.separator}" append="true" />
+	</target>
+	<!-- End of new code -->
+	
+</project>

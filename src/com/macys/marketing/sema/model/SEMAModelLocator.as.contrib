@@ -1,0 +1,46 @@
+package com.macys.marketing.sema.model
+{
+	import mx.collections.ArrayCollection;
+	import com.adobe.cairngorm.model.ModelLocator;
+	import com.macys.marketing.sema.vo.adcopy.ReplicateAdCopyVO;
+	import com.macys.marketing.sema.vo.adgroup.ReplicateAdGroupVO;
+	import com.macys.marketing.sema.vo.adkeyword.ReplicateAdKeywordVO;
+	import com.macys.marketing.sema.vo.tools.GenerateKeywordsVO;
+	
+	
+	[Bindable]
+	public class SEMAModelLocator implements com.adobe.cairngorm.model.ModelLocator
+	{
+		
+		public var replicateAdCopyVO:ReplicateAdCopyVO = new ReplicateAdCopyVO(); 
+		public var replicateAdKeywordVO:ReplicateAdKeywordVO = new ReplicateAdKeywordVO;
+		public var replicateAdGroupVO:ReplicateAdGroupVO = new ReplicateAdGroupVO;
+		public var generateKeywordsVO:GenerateKeywordsVO = new GenerateKeywordsVO;
+		
+		public var allAdCopyVO:ArrayCollection = new ArrayCollection();
+				
+		
+		
+		private static var modelLocator : SEMAModelLocator;
+		
+			public function SEMAModelLocator() 
+	   		{
+	   			if ( modelLocator != null )
+					throw new Error( "A single instance of ModelLocator is allowed." );
+	   		}
+   	
+   	
+		
+			public static function getInstance() : com.macys.marketing.sema.model.SEMAModelLocator
+			{
+				if ( modelLocator == null )
+					modelLocator = new SEMAModelLocator();
+				
+				return modelLocator;
+	   		 }
+  	
+ 
+		
+
+	}
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServiceEndpoints>
+  <ServiceEndpointWsdl name="AdGroupService">/SEMAServices/services/v1/AdGroupService</ServiceEndpointWsdl> 
+  <ServiceEndpointWsdl name="AdCopyService">/SEMAServices/services/v1/AdCopyService</ServiceEndpointWsdl>
+  <ServiceEndpointWsdl name="AdKeyWordService">/SEMAServices/services/v1/AdKeyWordService</ServiceEndpointWsdl>
+  <ServiceEndpointWsdl name="KeyWordGeneratorService">/SEMAServices/services/v1/KeyWordGeneratorService</ServiceEndpointWsdl>  
+  <ServiceEndpointWsdl name="ReplicateEntityService">/SEMAServices/services/v1/ReplicateEntityService</ServiceEndpointWsdl>  
+</ServiceEndpoints>

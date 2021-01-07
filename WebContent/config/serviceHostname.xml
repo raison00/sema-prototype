@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RootServiceHostname>
+	<CurrentEnvironment>
+		<Name>${env}</Name> <!-- Value got from the *build.properties file -->
+	</CurrentEnvironment>
+	
+	<ServiceHostnames>
+		<!-- Values got from the *build.properties file -->
+		<ServiceHostname envName="${env}">${service.hostname}</ServiceHostname>
+		
+		<!--
+		<ServiceHostname envName="LENNY_DEV">http://md000yd3162201:8081</ServiceHostname>
+		<ServiceHostname envName="DEV">http://localhost:8080</ServiceHostname>
+		<ServiceHostname envName="CI">http://md000yd3219978:8080</ServiceHostname>
+		<ServiceHostname envName="QA">http://md000yd3135889:80</ServiceHostname>
+		<ServiceHostname envName="INT">http://inthostname</ServiceHostname>
+		<ServiceHostname envName="PROD">http://prodhostname</ServiceHostname>
+		-->
+						
+	</ServiceHostnames>
+	
+</RootServiceHostname>

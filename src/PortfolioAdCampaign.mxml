@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Portfolio Campaigns" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+		horizontalScrollPolicy="off" verticalScrollPolicy="off"
+		xmlns:flexlib="flexlib.controls.*" creationPolicy="all" activate="clear()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;		  	
+			[Bindable] public var campaignsListData : ArrayCollection; 	
+
+ 			private function gridFilter(item:Object):Boolean 
+			{
+				var viewable : Boolean = true;
+				try
+				{
+					if ((cmbCampaignSortState.selectedIndex==1) &&(item.Status!="Enabled"))
+					{
+						viewable = false	
+					}
+	            	else if ((cmbCampaignSortState.selectedIndex==2)&&(item.Status=="Deleted"))
+	            	{
+	            		viewable = false;
+	            	}
+	            	
+	            	if ((viewable)&&(searchTextBox.text.toString().length>0))
+	            	{
+	            		viewable = false;
+	            		if (item.CampaignName.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+	            		{
+	            			viewable = true;
+	            		}
+	            	}
+	   			} 
+	   			catch ( e : Error)
+	   			{
+					//NPE caused by widgets that arent instantiated yet should be handled through view controllers and/or mediators 
+	   				//trace ("This is a non-critical error. But we need to preload objects or do a workaround");
+	   			}
+	            return viewable;
+        	}
+        	
+			public function refreshGrid() : void
+			{
+				if (campaignsListData != null){
+					campaignsListData.filterFunction = gridFilter;
+					campaignsListData.refresh();
+				}				
+			}
+			
+			public function clear() : void
+			{
+				try
+				{
+					searchTextBox.text = "";
+					cmbCampaignSortState.selectedIndex = 0;
+					refreshGrid();
+				}
+				catch (e : Error)
+				{
+					//This happens whne the component is created at first time. Needs preloading of components.
+				}
+			}
+			
+			private function resetGrid() : void
+			{
+				if (campaignsListData != null){										
+					dgPortfolioCampaign.selectedItem = null;	
+					dgPortfolioCampaign.scrollToIndex(0);													
+				}
+			}
+ 		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%" height="50">
+	 	<mx:Label text="Sort By" fontWeight="bold" height="20" width="54" textAlign="right"/>
+	 	<mx:ComboBox id="cmbCampaignSortState" editable="false" enabled="true" width="114" 
+	 		change="refreshGrid()" height="20" tabIndex="2">
+	 		<mx:dataProvider>
+				<mx:String>All</mx:String>
+				<mx:String>All Active</mx:String>
+				<mx:String>All But Deleted</mx:String>
+			</mx:dataProvider>
+	 	</mx:ComboBox>
+	 	<mx:Label text="Search" fontWeight="bold" width="75" textAlign="right"/>
+	 	<flexlib:PromptingTextInput id="searchTextBox" x="318" y="8" prompt="Search Name" change="refreshGrid()" tabIndex="1"/>
+	</mx:HBox>
+	
+	<mx:DataGrid width="100%" height="100%" borderStyle="solid" dataProvider="{this.campaignsListData}" id="dgPortfolioCampaign" headerRelease="resetGrid();" verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name" dataField="CampaignName"/>
+			<mx:DataGridColumn headerText="Effective Date" dataField="EffectiveDate"/>
+			<mx:DataGridColumn headerText="Expiration Date" dataField="ExpirationDate"/>
+			<mx:DataGridColumn headerText="Daily Budget" dataField="DailyBudget"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status"/>
+			<mx:DataGridColumn headerText="Clicks" dataField="Clicks"/>
+			<mx:DataGridColumn headerText="Impressions" dataField="Impressions"/>
+			<mx:DataGridColumn headerText="Cost" dataField="Cost"/>
+			<mx:DataGridColumn headerText="CTR" dataField="CTR"/>
+			<mx:DataGridColumn headerText="CPM" dataField="CPM"/>
+			<mx:DataGridColumn headerText="CPC" dataField="CPC"/>
+		</mx:columns>
+	</mx:DataGrid>
+</mx:VBox>

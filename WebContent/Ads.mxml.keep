@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:yahoo="http://www.yahoo.com/astra/2006/mxml" label="Ad Copy" width="677" height="443"
+	xmlns:flexlib="http://code.google.com/p/flexlib/">					
+	
+	<mx:Script>
+ 		<![CDATA[
+		  	import mx.collections.ArrayCollection;		  	
+ 			[Bindable] public var adsListData : ArrayCollection;		
+ 		]]>
+ 	</mx:Script>
+	
+	<mx:DataGrid width="656" height="109" id="grdAdCopies" editable="false" 
+		enabled="true" 
+		top="54" horizontalCenter="0" 
+		borderStyle="solid" textAlign="left"
+	    backgroundAlpha="0.5" dataProvider="{this.adsListData}" fontSize="9" horizontalScrollPolicy="auto" tabIndex="2" backgroundDisabledColor="#FFFFFF">						
+		<mx:columns>
+			<mx:DataGridColumn headerText="Ad Copy Id" dataField="Id"/>
+			<mx:DataGridColumn headerText="Headline" dataField="Headline"/>			
+			<mx:DataGridColumn headerText="Type" dataField="Type"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status"/>
+			<mx:DataGridColumn headerText="Clicks" dataField="Clicks"/>			
+			<mx:DataGridColumn headerText="Impressions" dataField="Impressions"/>
+			<mx:DataGridColumn headerText="Cost" dataField="Cost"/>
+			<mx:DataGridColumn headerText="CTR" dataField="CTR"/>
+			<mx:DataGridColumn headerText="CPM" dataField="CPM"/>
+			<mx:DataGridColumn headerText="CPC" dataField="CPC"/>
+			<mx:DataGridColumn headerText="Actual Status" dataField="Actual Status"/>
+			<mx:DataGridColumn headerText="AVG. CPC" dataField="AVG. CPC"/>
+		</mx:columns>
+	</mx:DataGrid>
+
+	<mx:Panel x="468" y="171" width="199" height="262" layout="absolute" title="Ad Preview" roundedBottomCorners="true" borderThicknessTop="0" headerHeight="20" backgroundAlpha="1.0" horizontalAlign="left">				
+		<mx:Label x="10" y="11" width="159" color="#0024FF" 
+			fontWeight="bold" 
+			fontSize="12" textDecoration="underline" id="lblHeadline"/>
+		<mx:Label x="10" y="34" width="159" height="19" fontWeight="bold" id="lblDescOne"/>
+		<mx:Label x="10" y="50" width="159" height="19" fontWeight="bold" id="lblDescTwo"/>
+		<mx:Label x="10" y="69" width="159" height="19" color="#0BB61F" fontWeight="bold" id="lblUrl"/>
+	</mx:Panel>
+	
+	<mx:Canvas width="656" height="42" borderStyle="solid" cornerRadius="10" borderColor="#B7BABC" x="10" y="4">
+	
+		<mx:Button y="3" label="Add" id="btnAddAd" labelPlacement="right" x="4" width="105"  
+			height="35" icon="@Embed('../icons/new.png')" 
+			enabled="false" tabIndex="1" toolTip="Add"/>
+			
+		<mx:Button y="3" label="Save" width="105" height="35" color="#0B333C" id="btnSaveAd" 
+			labelPlacement="right" x="230" 							
+			icon="@Embed('../icons/save.png')"
+		    enabled="false" tabIndex="10" toolTip="Save"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnEditAds" labelPlacement="right" 
+			x="117"
+			cornerRadius="5" toolTip="Edit" enabled="false" label="Edit" tabIndex="5"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnCancelAds" labelPlacement="right" 
+			x="343"
+			cornerRadius="5" toolTip="Cancel" enabled="true" label="Cancel" tabIndex="5"/>
+			
+	</mx:Canvas>
+		<mx:Canvas label="Description" x="10" y="171" width="450" height="266" id="tbAdsDescription">		
+		<mx:Label x="10" y="10" text="Headline: *" width="85" fontWeight="bold"/>
+		<mx:Label x="10" y="35" text="Descr. Line 1: *" width="96" fontWeight="bold"/>
+		<mx:Label x="10" y="61" text="Descr. Line 2: *" width="96" fontWeight="bold" textAlign="left"/>
+		<mx:Label x="9" y="87" text="Disp. URL: *" width="85" fontWeight="bold" textAlign="left"/>
+		<mx:Label x="10" y="112" text="Dest. URL: *" width="85" fontWeight="bold"/>
+		<mx:Label x="254" y="195" text="Status:" width="50" fontWeight="bold"/>
+		
+		<mx:ComboBox  x="310" y="193" width="130" id="cmbAdCopyStatus" enabled="true" editable="false" 
+			cornerRadius="0" tabIndex="13">
+			<mx:dataProvider>
+				<mx:String>Enabled</mx:String>
+				<mx:String>Paused</mx:String>
+				<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		
+		<flexlib:PromptingTextInput prompt="Headline" x="103" y="8" width="335" id="txtHeadline" enabled="true" maxChars="25" tabIndex="3"/>
+		<flexlib:PromptingTextInput prompt="Description 1" x="103" y="33" width="335" id="txtDescOne" enabled="true" maxChars="35" tabIndex="4"/>
+		<flexlib:PromptingTextInput prompt="Description 2" x="103" y="59" width="335" id="txtDescTwo" enabled="true" maxChars="35" tabIndex="5"/>
+		<flexlib:PromptingTextInput prompt="Display URL" x="102" y="85" width="335" id="txtDispUrl" enabled="true" maxChars="35" tabIndex="6"/>
+		<flexlib:PromptingTextInput prompt="Full URL (http://www.macys.com)" x="102" y="110" width="335" id="txtDestUrl" enabled="true" maxChars="1024" tabIndex="7"/>
+		
+		
+		<!--mx:TextInput x="103" y="10" width="335" id="txtHeadline" enabled="false" maxChars="25" tabIndex="3"/>
+		<mx:TextInput x="103" y="35" width="335" id="txtDescOne" enabled="false" maxChars="35" tabIndex="4"/>
+		<mx:TextInput x="103" y="61" width="335" id="txtDescTwo" enabled="false" maxChars="35" tabIndex="5"/>
+		<mx:TextInput x="102" y="87" width="335" id="txtDispUrl" enabled="false" maxChars="35" tabIndex="6"/>
+		<mx:TextInput x="102" y="112" width="335" id="txtDestUrl" enabled="false" maxChars="1024" tabIndex="7"/!-->
+		<mx:Label x="254" y="224" text="Type:" width="41" fontWeight="bold" id="lblType"/>
+		<mx:ComboBox x="310" y="222" width="130" id="cmbAdCopyType" enabled="false" editable="false" cornerRadius="0" tabIndex="15">
+			<mx:dataProvider>
+				<mx:String>PROMO</mx:String>	
+				<mx:String>DIDO</mx:String>				
+			</mx:dataProvider>	
+		</mx:ComboBox>
+
+		<mx:RadioButtonGroup id="AdSettings"/>
+		<mx:Label x="10" y="138" text="Scheduled Date Range:" width="212" fontWeight="bold"/>
+		<mx:DateField x="160" y="138" width="123" id="dtEffectiveDate" text="Start Date" enabled="false" tabIndex="8"/>
+		<mx:DateField x="310" y="138" width="123" id="dtExpirationDate" text="End Date" enabled="false" tabIndex="9"/>	
+		<yahoo:TimeInput id="dtEffectiveTime" value="{new Date(0001, 01, 01, 0, 00, 01)}"  AMText="AM" x="160" y="164" backgroundColor="#FFFFFF" width="107" enabled="false" tabIndex="10"/>  
+		<yahoo:TimeInput id="dtExpirationTime" value="{new Date(9999, 12, 31, 11, 59, 59)}" PMText="PM" x="310" y="164" backgroundColor="#FFFFFF" width="107" enabled="false" tabIndex="11"/>  
+		<mx:Label x="10" y="219" text="Disapproved" fontWeight="bold"/>
+		<mx:CheckBox x="118" y="219" id="chkAdCopyDisapproved" tabIndex="14" enabled="false"/>
+		<mx:Label x="10" y="195" text="Vendor Status" fontWeight="bold"/>
+		<mx:Text x="102" y="193" width="130" id="txtAdVenderStatus" />
+			
+		<mx:Label x="10" y="241" text="Vendor Policy Ex." fontWeight="bold" width="116"/>
+		<mx:CheckBox x="118" y="240" id="chkAdCopyVendorPolicyEX" tabIndex="16"/>
+	</mx:Canvas>
+</mx:Canvas>

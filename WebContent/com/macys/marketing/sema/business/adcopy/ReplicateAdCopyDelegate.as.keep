@@ -1,0 +1,112 @@
+package com.macys.marketing.sema.business.adcopy
+{
+	import com.macys.marketing.sema.vo.adcopy.ReplicateAdCopyVO;
+//	import mx.core.Application;
+	
+	public class ReplicateAdCopyDelegate
+	{
+    import mx.rpc.soap.WebService;
+    import mx.rpc.events.ResultEvent;
+    import mx.rpc.events.FaultEvent;
+    import mx.rpc.soap.LoadEvent;
+   
+    import com.macys.marketing.sema.model.SEMAModelLocator;
+
+	private var model : SEMAModelLocator = SEMAModelLocator.getInstance();
+	private var ws:WebService = new mx.rpc.soap.WebService();
+ 	
+	public function ReplicateAdCopyDelegate()
+		{
+		}
+	
+    
+    
+    public function execute(entityId:Number,destinationParentId:Number):void {
+        
+        trace("[business] Creating web service request for replicate adcopy entityId " + entityId + ", destinationParentId " + destinationParentId + ".");
+              
+      	/* ws.wsdl = "http://MD000YD3162201:8081/SEMAServices/services/v1/ReplicateEntityService?wsdl"
+        ws.endpointURI = "http://MD000YD3162201:8081/SEMAServices/services/v1/ReplicateEntityService";
+        ws.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", "lenny");
+         */
+      	ws.wsdl = Application.application.serviceRegistry['KeyWordGeneratorService']+"?wsdl"
+        ws.endpointURI = Application.application.serviceRegistry['KeyWordGeneratorService'];
+        ws.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", "lenny");
+        
+        
+        if(ws.canLoadWSDL()) {
+        	trace("[business] WSDL URI is valid.");
+    		trace("[business] Service:" + ws.toString());
+        } else {
+        	trace("[business] WSDL URI is not valid.");
+        }
+        ws.loadWSDL();
+        
+   
+        ws.ReplicateAdCopyList.addEventListener("result", resultHandler);
+        ws.addEventListener("fault", faultHandler);
+        ws.addEventListener("load", loadHandler);
+       
+          
+        
+        ws.ReplicateAdCopyList.send({EntityId:entityId, DestinationParentId:destinationParentId});
+        //ws.ReplicateAdCopyList.send(119,66);
+       
+    }
+    
+    // when wsdl load is a success
+    public function loadHandler(event:LoadEvent):void {
+    	
+    	trace("[business] WSDL loaded.");
+    	
+    	
+    }
+
+    public function resultHandler(event:ResultEvent):void {
+        
+       
+        trace("[business] result recieved: " + event.result.toString());
+        
+        for(var s:String in event.result) {
+        	trace("member: " + s + " is: " + event.result[s].toString() );
+        }
+        
+        // get result set
+        //replicateAdCopyVO = ReplicateAdCopyVO(event.result);
+        model.replicateAdCopyVO.id = event.result.Id;
+       	model.replicateAdCopyVO.groupId = event.result.GroupId;
+       	model.replicateAdCopyVO.status = event.result.Status;
+       	model.replicateAdCopyVO.state = event.result.State;
+       	model.replicateAdCopyVO.headline = event.result.Headline;
+       	model.replicateAdCopyVO.description1 = event.result.Description1;
+       	model.replicateAdCopyVO.description2 = event.result.Description2;
+       	model.replicateAdCopyVO.displayUrl = event.result.DisplayUrl;
+       	model.replicateAdCopyVO.destinationUrl = event.result.DestinationUrl;
+       	model.replicateAdCopyVO.vendorPolicyExemptionRequest = event.result.VendorPolicyExemptionRequest;
+       	model.replicateAdCopyVO.expirationDate = event.result.ExpirationDate;
+       	model.replicateAdCopyVO.effectiveDate = event.result.EffectiveDate;
+       	model.replicateAdCopyVO.createdDate = event.result.CreatedDate;
+       	model.replicateAdCopyVO.modifiedDate = event.result.ModifiedDate;
+       	model.replicateAdCopyVO.createdBy = event.result.CreatedBy;
+       	model.replicateAdCopyVO.modifiedBy = event.result.ModifiedBy;
+       	
+       	
+        
+       
+        trace("[business] model updated.");
+     
+    }
+
+    public function faultHandler(event:FaultEvent):void {
+  		trace("[business] WebService error: " + event.fault);
+  		trace("[business] Detail: " + event.message); 
+  		
+  		for(var s:String in event.message.body) {
+        	trace("member: " + s + " is: " + event.message.body[s].toString() );
+        }
+  		
+    }
+		
+
+	}
+}

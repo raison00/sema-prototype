@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml" 	
+	xmlns:model="com.macys.marketing.sema.model.*" 
+	xmlns:testerview="com.macys.marketing.sema.view.serviceTester.*" 
+	xmlns:control="com.macys.marketing.sema.control.*"    
+    xmlns:login="com.macys.marketing.sema.view.login.*"
+
+	layout="vertical"
+	initialize="init()">
+
+	<control:ServiceController id="Controller"/> 
+
+	<mx:ViewStack selectedIndex="{model.enableAppOrLogin}" id="mainViewStack" resizeToContent="true">
+
+		<login:Login id="loginScreen"/>
+
+		<mx:Canvas id="app">
+			<testerview:ServiceTester id="serviceTester"/>			
+		</mx:Canvas>
+
+		
+
+	</mx:ViewStack>
+
+	<mx:Script>
+		<![CDATA[
+			
+			
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+		
+			
+			
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+			
+			
+			private function init():void {
+				
+				model = SEMAModelLocator.getInstance();
+				
+			}//end init()
+
+			
+
+
+
+
+		]]>
+	</mx:Script>
+    
+    <mx:Style>
+        Button {
+            font-family: embeddedArialBold;
+        }
+       
+        Panel {
+            font-family: embeddedArialBold;
+            /*font-size: 20px;*/    
+        }
+        
+        .panelTitle {
+            font-family: embeddedArialBold;    
+        }
+        global {
+        	 font-size: 20px
+        } 
+
+    </mx:Style>
+
+</mx:Application>

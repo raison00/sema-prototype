@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SEMAClientConfig>
+	<WebServiceURL wsName="AdCopyService">http://md000yd3135889/SEMAServices/services/v1/AdCopyService?wsdl</WebServiceURL> 
+	<WebServiceURL wsName="AdKeywordService">http://md000yd3135889/SEMAServices/services/v1/AdKeyWordService?wsdl</WebServiceURL> 
+	<WebServiceURL wsName="AdGroupService">http://md000yd3135889/SEMAServices/services/v1/AdGroupService?wsdl</WebServiceURL> 
+	<WebServiceURL wsName="CampaignService">http://md000yd3135889/SEMAServices/services/v1/CampaignService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="PortfolioService">http://md000yd3135889/SEMAServices/services/v1/PortfolioService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="PortfolioGroupService">http://md000yd3135889/SEMAServices/services/v1/PortfolioGroupService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="AdCopyStatsService">http://md000yd3135889/SEMAServices/services/v1/AdCopyStatsService?wsdl</WebServiceURL>	 
+	<WebServiceURL wsName="AdKeywordStatsService">http://md000yd3135889/SEMAServices/services/v1/AdKeyWordStatsService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="AdGroupStatsService">http://md000yd3135889/SEMAServices/services/v1/AdGroupStatsService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="CampaignStatsService">http://md000yd3135889/SEMAServices/services/v1/CampaignStatsService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="KeywordGeneratorService">http://md000yd3135889/SEMAServices/services/v1/KeyWordGeneratorService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="AccountService">http://md000yd3135889/SEMAServices/services/v1/AccountService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="ReplicateEntityService">http://md000yd3135889/SEMAServices/services/v1/ReplicateEntityService?wsdl</WebServiceURL>
+	<WebServiceURL wsName="CampaignExistsService">http://md000yd3135889/SEMAServices/semamvc/campaign.do</WebServiceURL>	  
+</SEMAClientConfig>

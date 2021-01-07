@@ -1,0 +1,42 @@
+Tree {
+   borderStyle: none;
+   fontSize: 10;
+}
+
+TabNavigator {
+   tabHeight: 25;
+   cornerRadius: 0;
+   horizontalGap: -1;
+   horizontalAlign: left;
+   paddingLeft: 0;
+   textIndent: 0;
+   borderStyle: solid;
+   borderColor: #aab3b3;
+   fontSize: 10;
+   borderThickness: 1;
+   dropShadowEnabled: false;
+   tabStyleName: "myTabs";
+   firstTabStyleName: "myTabs";
+   lastTabStyleName: "myTabs";
+   selectedTabTextStyleName: "mySelectedTabs";
+}
+
+.myTabs {
+   cornerRadius: 0;
+   borderColor: #aab3b3;
+
+}
+
+.mySelectedTabs {
+}
+
+
+Alert
+{
+	background-color: #ffffff;
+	background-alpha: 0.50;
+	border-color: #999999;
+	border-alpha: 0.75;
+	color: #000000;
+	
+}

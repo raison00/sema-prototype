@@ -1,0 +1,46 @@
+ScrollBar
+{
+    downArrowDisabledSkin: ClassReference("mx.skins.ProgrammaticSkin");
+    downArrowDownSkin: ClassReference("mx.skins.ProgrammaticSkin");
+    downArrowOverSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	downArrowUpSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	thumbIcon: ClassReference("mx.skins.ProgrammaticSkin");
+	thumbDownSkin: Embed(source="rdp_FxSkin.swf", symbol="scrollbar_thumb_down");
+	thumbOverSkin: Embed(source="rdp_FxSkin.swf", symbol="scrollbar_thumb_down");
+    thumbUpSkin: Embed(source="rdp_FxSkin.swf", symbol="scrollbar_thumb");
+    trackSkin: Embed(source="rdp_FxSkin.swf", symbol="scrollbar_track");
+    trackDisabledSkin: ClassReference("mx.skins.ProgrammaticSkin");
+    upArrowDisabledSkin: ClassReference("mx.skins.ProgrammaticSkin");
+    upArrowDownSkin: ClassReference("mx.skins.ProgrammaticSkin");
+    upArrowOverSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	upArrowUpSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	upArrowUpSkin: ClassReference("mx.skins.ProgrammaticSkin");
+}
+DataGrid {
+   backgroundAlpha: 1;
+   alternatingItemColors: #ffffff, #f8f8f8;
+   headerColors: #f9f9f9, #e0e0e0;
+   vGridLines: true;
+   vGridLineColor: #F7F7F7;
+   useRollOver: false;
+   borderStyle: none;
+   borderThickness: 1;
+   borderColor: #b1b1b1;
+   selectionColor: #d6eca7;
+   color: #333333;
+   textSelectedColor: #000000;
+   dropShadowEnabled: false;
+   fontSize: 10;
+   fontWeight: normal;
+   headerStyleName: "mydataGridHeaderStyle";
+}
+
+.mydataGridHeaderStyle {
+   color: #000000;
+   fontSize: 10;
+   headerColors: #DAEEAF, #C1E27B;
+   fillColors: haloSilver, haloBlue;
+   fillAlphas: 1.0, 0.5;
+   selectedFillColors: black, black;
+   useRollOver: false;
+}

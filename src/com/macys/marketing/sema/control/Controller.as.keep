@@ -1,0 +1,30 @@
+package com.macys.marketing.sema.control
+{
+	
+	import com.adobe.cairngorm.control.FrontController;
+	import com.macys.marketing.sema.command.adcopy.*;
+	import com.macys.marketing.sema.command.adgroup.*;
+	import com.macys.marketing.sema.command.adkeyword.*;
+	import com.macys.marketing.sema.command.tools.*;
+	
+	public class Controller extends FrontController
+	{
+		public function Controller()
+		{
+			addCommand (Controller.EVENT_REPLICATE_ADCOPY, ReplicateAdCopyCommand );
+			addCommand (Controller.EVENT_REPLICATE_ADKEYWORD, ReplicateAdKeywordCommand );
+			addCommand (Controller.EVENT_REPLICATE_ADGROUP, ReplicateAdGroupCommand );
+			addCommand (Controller.EVENT_GET_KEYWORD_VARIATIONS, GenerateKeywordsCommand );
+		
+			addCommand (Controller.EVENT_GETALL_ADCOPY, GetAllAdCopyCommand );
+		
+		}
+		
+		public static const EVENT_REPLICATE_ADCOPY : String = "EVENT_REPLICATE_ADCOPY";
+		public static const EVENT_REPLICATE_ADKEYWORD : String = "EVENT_REPLICATE_ADKEYWORD";
+		public static const EVENT_REPLICATE_ADGROUP : String = "EVENT_REPLICATE_ADGROUP";
+		public static const EVENT_GET_KEYWORD_VARIATIONS : String = "EVENT_GET_KEYWORD_VARIATIONS";
+
+		public static const EVENT_GETALL_ADCOPY : String = "EVENT_GETALL_ADCOPY";
+	}
+}

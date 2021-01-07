@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+			width="100%" height="100%" 
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" 
+	       verticalScrollPolicy="auto" horizontalScrollPolicy="auto"
+			xmlns:replicate="com.macys.marketing.sema.view.replicate.*"
+	        initialize="init(event)"
+			xmlns:flexlib="http://code.google.com/p/flexlib/"
+			label="Keywords &amp; Placements"
+			xmlns:custom="CustomComps.*">
+ 
+ 	<mx:Script>
+ 		<![CDATA[
+ 			import mx.events.CloseEvent;
+ 			import mx.core.Application;
+ 			import mx.controls.Alert;
+ 			import com.macys.marketing.sema.event.adkeyword.ReplicateAdKeywordEvent;
+ 			import com.macys.marketing.sema.model.SEMAModelLocator;
+ 			import com.macys.marketing.sema.model.type.ReplicateToken;
+ 			import com.macys.marketing.sema.view.replicate.ConfirmationDialog;
+		  	import mx.collections.ArrayCollection;	
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		  		  	
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+			[Bindable] 
+			private var sourceType:String;
+ 			
+ 			public function init(event:Event):void 
+ 			{
+				model = SEMAModelLocator.getInstance();		
+				sourceType = ReplicateToken.kAdKeyword;	
+ 			}
+
+ 			[Bindable] 
+			public var keywordsListData : ArrayCollection;
+ 			
+ 			[Bindable]
+ 			public var copyEnabled:Boolean;
+ 			[Bindable]
+ 			public var pasteEnabled:Boolean;
+ 			[Bindable]
+ 			public var clearEnabled:Boolean;
+ 			
+ 			public function setCopyEnabled(value:Boolean):void 
+ 			{
+ 				trace("[KEy] setCopyEnabled:", value);
+ 				copyEnabled = true;
+ 			}
+ 			
+ 			public function setPasteEnabled(value:Boolean):void 
+ 			{ 
+ 				pasteEnabled = value;
+ 			}
+ 			
+ 			public function setClearEnabled(value:Boolean):void
+ 			{
+ 				clearEnabled = value;
+ 			}
+ 			
+ 			public function handleCopyButtonClick(event:Event):void 
+ 			{
+ 				if(grdKeywords.selectedIndex >= 0) 
+ 				{
+ 					var token:ReplicateToken = new ReplicateToken();
+ 					token.sourceType = sourceType;
+ 					token.sourceId = grdKeywords.selectedItem.Id;
+ 					token.targetId = Number(Application.application.customTreeView.treeList.selectedItem.@adGroupId);
+			   		token.targetName = Application.application.customTreeView.treeList.selectedItem.@label;
+			   		token.targetType = ReplicateToken.kAdGroup;
+ 					model.replicationModel.add(ReplicateToken.kAdKeyword, token);
+ 					setClearEnabled(true);
+ 					setPasteEnabled(true);
+ 				}
+ 			}
+ 			
+ 			public function handlePasteButton(event:Event):void
+ 			{
+ 				//If in Add/Edit mode, exit out of it
+ 				if(this.btnCancelKeywords.visible)
+ 				{
+ 					this.btnCancelKeywords.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+ 				}
+ 				Alert.show("Do you want to copy this Keyword to \"" + model.replicationModel.retrieve(ReplicateToken.kAdKeyword).targetName + "\"?", "Keyword Replication", Alert.YES|Alert.NO, this, handlePasteConfirmation,null ,Alert.NO);
+ 			}
+ 			
+ 			public function handlePasteConfirmation(event:CloseEvent):void {
+ 				
+ 				if(event.detail == Alert.YES){
+ 				var token:ReplicateToken = model.replicationModel.retrieve(ReplicateToken.kAdKeyword);
+ 				if (token.sourceId >= 0 && token.targetId >= 0) {
+ 					
+ 					/* if (token.targetType == ReplicateToken.kAdGroup && //kAdCampaign && 
+ 					    token.sourceType == ReplicateToken.kAdKeyword) //kAdGroup) 
+ 					{ */
+						// call event
+						CairngormEventDispatcher.getInstance().dispatchEvent(new ReplicateAdKeywordEvent(token.sourceId, token.targetId));
+ 					/* } 
+ 					else 
+ 					{
+ 						// we can't copy to this node
+ 						mx.controls.Alert.show("The item " + token.sourceType + " cannot be copied to " + token.targetType + ".");
+ 					} */
+ 				} else {
+ 					// No target selected
+ 					mx.controls.Alert.show("Please select a paste target.");
+ 				}
+ 			}
+ 			
+ 			}
+ 			
+ 			public function handleClearButton(event:Event):void {
+ 				model.replicationModel.clear(ReplicateToken.kAdKeyword);
+				setPasteEnabled(false);
+				setClearEnabled(false);
+				mx.controls.Alert.show("The clipboard has been cleared.");
+ 			}
+ 			
+ 			public function handleKeywordSelection(event:Event):void
+			{
+				if (event.target.selectedIndex != -1)
+				{
+					copyEnabled = true;
+				}
+				else
+				{
+					copyEnabled = false;
+					clearEnabled = false;
+				}
+				//TODO multiple selection support...
+			}
+ 			
+ 		]]>
+ 	</mx:Script>
+	<mx:Canvas width="100%" height="50">
+	
+		<mx:Button y="3" label="Add" id="btnAddKW" labelPlacement="right" x="4" width="105"  height="35" 
+			icon="@Embed('../icons/new.png')" tabIndex="1"  enabled="true"/>
+			
+		<mx:Button y="3" label="Save" width="105" height="35" color="#0B333C" id="btnSaveKW" labelPlacement="right" 
+			x="4" icon="@Embed('../icons/save.png')" tabIndex="3"  enabled="true"/>
+			
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnEditKeywords" labelPlacement="right" 
+			x="117"
+			cornerRadius="5"  enabled="true" label="Edit" tabIndex="2"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnCancelKeywords" labelPlacement="right" 
+			x="117"
+			cornerRadius="5"  enabled="true" label="Cancel" tabIndex="4"/>
+			
+		<replicate:ButtonControls id="replicate" y="3" x="232"
+		                      copyEnabled="{copyEnabled}" pasteEnabled="{pasteEnabled}" clearEnabled="{clearEnabled}"
+		                      paddingLeft="5" proxy="{this}"/>
+	</mx:Canvas>
+ 	
+	<mx:DataGrid dragEnabled="true"
+		width="100%" height="100%" minHeight="150" borderStyle="solid" id="grdKeywords" editable="false" enabled="true" horizontalCenter="0" 
+		y="54" backgroundAlpha="0.5" 
+		dataProvider="{this.keywordsListData}" tabEnabled="false" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" 
+		backgroundDisabledColor="#FFFFFF"
+		change="handleKeywordSelection(event)">						
+		<mx:columns>		
+			<mx:DataGridColumn headerText="Keyword Text" dataField="KeywordText" width="150"/>
+			<mx:DataGridColumn headerText="Max CPC" dataField="MaxCPC" width="80"/>
+			<mx:DataGridColumn headerText="Min CPC" dataField="MinCPC" width="80"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status" width="80"/>
+			<mx:DataGridColumn headerText="Clicks" dataField="Clicks" width="80"/>			
+			<mx:DataGridColumn headerText="Impressions" dataField="Impressions" width="80"/>
+			<mx:DataGridColumn headerText="Cost" dataField="Cost" width="80"/>
+			<mx:DataGridColumn headerText="CTR" dataField="CTR" width="80"/>
+			<mx:DataGridColumn headerText="CPM" dataField="CPM" width="80"/>
+			<mx:DataGridColumn headerText="CPC" dataField="CPC" width="80"/>
+			<mx:DataGridColumn headerText="Avg. CPC" dataField="AvgCPC" width="80"/>
+			<mx:DataGridColumn headerText="Avg. Cost" dataField="AvgCost" width="80"/>
+		</mx:columns>
+	</mx:DataGrid>     
+	<mx:Panel width="100%" height="100%" minWidth="620" minHeight="225" verticalScrollPolicy="off" horizontalScrollPolicy="off" layout="absolute" title="Keyword Details">
+		<mx:Label x="10" y="15" text="Keyword Text *" width="105" fontWeight="bold"/>
+		<mx:Label x="10" y="42" text="Max CPC *" width="105" fontWeight="bold"/>
+		<mx:Label x="10" y="69" text="Min CPC" width="105" fontWeight="bold"/>
+		<mx:Label x="316" y="67" text="Status *" width="96" fontWeight="bold"/>
+		<flexlib:PromptingTextInput prompt="Keyword Text" x="123" y="13" id="txtKWText" maxChars="80" maxWidth="12" width="160" tabIndex="5" backgroundDisabledColor="#FFFFFF"/>
+		<custom:NumberInput x="123" y="40" id="txtKWMaxCPC" tabIndex="6" backgroundDisabledColor="#FFFFFF" width="160"/>
+		<custom:NumberInput x="123" y="67" id="txtKWMinCPC" tabIndex="7" backgroundDisabledColor="#FFFFFF" width="160"/>
+		<mx:ComboBox x="420" y="65" id="cmbKWStatus" width="160" tabIndex="12" cornerRadius="0">
+			<mx:dataProvider>
+				<mx:String>Enabled</mx:String>
+				<mx:String>Paused</mx:String>
+				<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		<mx:Label x="10" y="96" text="Destination URL *" fontWeight="bold"/>
+		<mx:Label x="10" y="155" text="Negative Match" fontWeight="bold"/>
+		<mx:CheckBox x="123" y="155" id="chkKWNegativeMatch" tabIndex="10"/>
+		<!-- <mx:TextInput x="123" y="94" id="txtKWDestURL" maxChars="1024" tabIndex="8" width="160" backgroundDisabledColor="#FFFFFF"/> -->
+		<flexlib:PromptingTextInput prompt="http://www.macys.com" x="123" y="94" width="160" id="txtKWDestURL" enabled="true" maxChars="1024" tabIndex="8" backgroundDisabledColor="#FFFFFF"/>
+		<mx:Label x="316" y="40" text="Match Type *" fontWeight="bold"/>
+		<mx:ComboBox x="420" y="38" id="cmbKWMatchType" width="160" tabIndex="11" cornerRadius="0">
+			<mx:dataProvider>
+				<mx:String>Broad</mx:String>
+				<mx:String>Phrase</mx:String>
+				<mx:String>Exact</mx:String>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		<mx:Label x="316" y="94" text="Vendor Status" fontWeight="bold"/>
+		<mx:Text x="420" y="92" id="txtKeyVendorStatus"  tabIndex="13"/>
+		<mx:Label x="316" y="12" text="Published Date" fontWeight="bold" id="lblPubDt"/>
+		<!--<mx:Label x="10" y="128" text="Vendor Policy Exemption Request" fontWeight="bold"/>
+		<mx:TextArea x="215" y="128" height="62" width="365" id="txtVEReq" backgroundDisabledColor="#FFFFFF" tabIndex="5"/>-->
+		<mx:Label x="10" y="128" text="Vendor Policy Ex." fontWeight="bold"/>
+		<mx:TextInput x="122" y="126" width="161" id="txtVEReq" enabled="false" backgroundDisabledColor="#FFFFFF" tabIndex="9" maxChars="300"/>
+		<mx:Label x="420" y="12" width="160" enabled="false" disabledColor="#000000" id="lblPublishedDate"/>
+	</mx:Panel>
+</mx:VBox>

@@ -1,0 +1,30 @@
+package com.macys.marketing.sema.business
+{
+	import mx.rpc.soap.WebService;
+	import com.macys.marketing.sema.model.SEMAModelLocator;
+
+	public class SEMAWebService extends WebService
+	{
+		
+		private var model : SEMAModelLocator = SEMAModelLocator.getInstance();
+
+		public function SEMAWebService(serviceName:String,userName:String)
+		{
+			super();
+			this.wsdl = model.serviceRegistry[serviceName] + "?wsdl";
+			this.endpointURI = model.serviceRegistry[serviceName];
+			this.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", userName);
+			
+			this.requestTimeout = 30; // seconds
+ 
+	        this.loadWSDL();
+			if(this.canLoadWSDL()) {
+        	trace("SEMAWebService: WSDL URI is valid.");
+    		trace("SEMAWebService: Service:" + this.toString());
+	        } else {
+	        	trace("SEMAWebService: WSDL URI is not valid.");
+	        }
+		}
+		
+	}
+}

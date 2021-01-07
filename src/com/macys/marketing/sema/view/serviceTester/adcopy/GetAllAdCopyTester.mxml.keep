@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="850" height="650" initialize="init(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.collections.ArrayCollection;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.event.adcopy.GetAllAdCopyEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+			public function init(event:Event) : void {
+				trace("GetAllAdCopyTester: init()");
+				model = SEMAModelLocator.getInstance();
+			}
+			
+			public function handleSubmit(event:Event):void {
+				CairngormEventDispatcher.getInstance().dispatchEvent(new GetAllAdCopyEvent(Number(groupId.text)));	
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- INPUT AREA -->
+	<mx:HBox>
+		<mx:Label text="Group Id"/>
+		<mx:TextInput id="groupId" />
+	</mx:HBox>
+		
+	<mx:Button id="submit" label="Submit" click="handleSubmit(event)"/>
+	
+	<!-- OUTPUT AREA  -->
+	<mx:VBox id="resultsPane" width="850">		
+		<mx:DataGrid id="allAdCopy" dataProvider="{model.allAdCopyVO}" 
+			right="0" left="0" bottom="0" top="0" alternatingItemColors="[#FFFFFF, #f2eaf4]">
+			<mx:columns>
+				<mx:DataGridColumn headerText="ID" dataField="id"/>
+				<mx:DataGridColumn headerText="AdVendorId" dataField="adVendorId"/>
+				<mx:DataGridColumn headerText="GroupId" dataField="groupId"/>
+				<mx:DataGridColumn headerText="Status" dataField="status"/>
+				<mx:DataGridColumn headerText="AdVendorStatus" dataField="adVendorStatus"/>
+				<mx:DataGridColumn headerText="State" dataField="state"/>
+				<mx:DataGridColumn headerText="Headline" dataField="headline"/>
+				<mx:DataGridColumn headerText="Description1" dataField="description1"/>
+				<mx:DataGridColumn headerText="Description2" dataField="description2"/>
+				<mx:DataGridColumn headerText="DisplayUrl" dataField="displayUrl"/>
+				<mx:DataGridColumn headerText="PublishedDate" dataField="publishedDate"/>
+				<mx:DataGridColumn headerText="DestinationUrl" dataField="destinationUrl"/>
+				<mx:DataGridColumn headerText="VendorPolicyExemptionRequest" dataField="vendorPolicyExemptionRequest"/>
+				<mx:DataGridColumn headerText="ExpirationDate" dataField="expirationDate"/>
+				<mx:DataGridColumn headerText="EffectiveDate" dataField="effectiveDate"/>
+				<mx:DataGridColumn headerText="Type" dataField="type"/>
+				<mx:DataGridColumn headerText="CreatedDate" dataField="createdDate"/>
+				<mx:DataGridColumn headerText="ModifiedDate" dataField="modifiedDate"/>
+				<mx:DataGridColumn headerText="CreatedBy" dataField="createdBy"/>
+				<mx:DataGridColumn headerText="ModifiedBy" dataField="modifiedBy"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+</mx:VBox>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="850" height="650" initialize="init(event)">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.event.adkeyword.ReplicateAdKeywordEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+			
+			
+			public function init(event:Event) : void {
+				model = SEMAModelLocator.getInstance();
+			}
+			
+			public function handleSubmit(event:Event):void {
+				
+				
+				CairngormEventDispatcher.getInstance().dispatchEvent(new ReplicateAdKeywordEvent(Number(sourceEntityId.text),Number(parentDestinationEntityId.text)));		
+				resultsPane.visible = true;		
+			}
+			
+		]]>
+	</mx:Script>
+
+
+	<!-- INPUT AREA -->
+	<mx:HBox>
+		<mx:Label text="Source Entity Id"/>
+		<mx:TextInput id="sourceEntityId" />
+	</mx:HBox>
+		
+	<mx:HBox>
+		<mx:Label text="Parent Destination Entity Id"/>
+		<mx:TextInput id="parentDestinationEntityId"/>
+	</mx:HBox>
+	
+	<mx:Button id="submit" label="Submit" click="handleSubmit(event)"/>
+	
+	<!-- OUTPUT AREA  -->
+	<mx:VBox id="resultsPane" visible="false" width="850">
+		
+		<mx:HRule width="850" height="1"/>
+		<mx:HBox>
+			<mx:Label text="New Entity Id:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.id}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Parent Entity Id:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.groupId}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Status:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.status}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Ad Vendor Status:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.adVendorStatus}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="State:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.state}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Keyword Text:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.keywordText}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Destination Url:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.destinationUrl}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Min CPC"/>
+			<mx:Text text="{model.replicateAdKeywordVO.minCpc}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Max CPC"/>
+			<mx:Text text="{model.replicateAdKeywordVO.maxCpc}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Negative Match"/>
+			<mx:Text text="{model.replicateAdKeywordVO.negativeMatch}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Vendor Policy Exemption Request:"/>
+			<mx:Text text="{model.replicateAdKeywordVO.vendorPolicyExemptionRequest}"/>
+		</mx:HBox>
+
+		
+
+		<mx:HBox>
+			<mx:Label text="Created"/>
+			<mx:Text text="{model.replicateAdKeywordVO.createdDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Modified"/>
+			<mx:Text text="{model.replicateAdKeywordVO.modifiedDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Created By"/>
+			<mx:Text text="{model.replicateAdKeywordVO.createdBy}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Modified By"/>
+			<mx:Text text="{model.replicateAdKeywordVO.modifiedBy}"/>
+		</mx:HBox>
+
+
+
+	</mx:VBox>
+	
+		
+</mx:VBox>

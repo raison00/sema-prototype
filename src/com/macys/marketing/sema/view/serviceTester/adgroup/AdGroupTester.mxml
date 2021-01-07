@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:adgroup="com.macys.marketing.sema.view.serviceTester.adgroup.*"
+	width="400" height="300">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			public function serviceButtonsHandler(event:ItemClickEvent) :void {
+				adGroupTesterViewStack.selectedIndex = event.index;
+			}
+						
+		]]>
+	</mx:Script>
+	
+	
+	<mx:ButtonBar itemClick="serviceButtonsHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>get AllAdGroup</mx:String>
+				<mx:String>get AdGroupList</mx:String>
+				<mx:String>get AdGroupStats</mx:String>
+				<mx:String>put AdGroupList</mx:String>
+				<mx:String>replicate AdGroup</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+		
+	</mx:ButtonBar>
+	
+	
+	<mx:ViewStack id="adGroupTesterViewStack" width="850" height="650">
+		<mx:Canvas id="getAllAdGroup">
+	 		<adgroup:GetAllAdGroupTester id="getAllAdGroupTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdGroupList">
+			<adgroup:GetAdGroupListTester id="getAdGroupListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdGroupStats">
+			<adgroup:GetAdGroupStatsTester id="getAdGroupStatsTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="putAdGroupList">
+			<adgroup:PutAdGroupListTester id="putAdGroupListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="replicateAdGroup" width="850" height="650">
+			<adgroup:ReplicateAdGroupTester id="replicateAdGroupTesterInstance"/>
+		</mx:Canvas>
+		
+		
+	</mx:ViewStack>
+	
+</mx:VBox>

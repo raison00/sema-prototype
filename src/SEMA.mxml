@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Portfolio Groups" 
+	xmlns:flexlib="http://code.google.com/p/flexlib/" activate="clear()"
+	paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+ verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+
+	<mx:Script>
+ 		<![CDATA[
+ 			import mx.collections.SortField;
+		  	import mx.collections.ArrayCollection;		  	
+ 			[Bindable] public var portfolioGroupsListData : ArrayCollection; 	
+ 			
+ 			private function gridFilter(item:Object):Boolean 
+			{
+				var viewable : Boolean = true;
+				try
+				{
+					if ((cmbPortfolioGroupSortState.selectedIndex==1) &&(item.Status!="Enabled"))
+					{
+						viewable = false	
+					}
+	            	else if ((cmbPortfolioGroupSortState.selectedIndex==2)&&(item.Status=="Deleted"))
+	            	{
+	            		viewable = false;
+	            	}
+	            	
+	            	if ((viewable)&&(searchTextBox.text.toString().length>0))
+	            	{
+	            		viewable = false;
+	            		if (item.Description.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+	            		{
+	            			viewable = true;
+	            		}
+	            		if (item.Name.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+	            		{
+	            			viewable = true;
+	            		}
+	            	}
+				}
+				catch (e : Error)
+				{
+					trace("This should not return any error. "); 
+				}
+            	return viewable;
+        	}
+        	
+			private function refreshGrid() : void
+			{
+				if (portfolioGroupsListData != null){
+					portfolioGroupsListData.filterFunction = gridFilter;
+					portfolioGroupsListData.refresh();
+				}
+			}
+			
+			public function clear() : void
+			{
+				try
+				{
+					searchTextBox.text = "";
+					cmbPortfolioGroupSortState.selectedIndex = 0;
+					refreshGrid();
+				}
+				catch (e : Error)
+				{
+					//This happens whne the component is created at first time. Needs preloading of components.
+				}
+			}
+			
+			private function resetGrid() : void
+			{
+				if (portfolioGroupsListData != null){										
+					grdPortfolioList.selectedItem = null;	
+					grdPortfolioList.scrollToIndex(0);													
+				}
+			}
+			
+ 		]]>
+ 	</mx:Script>
+
+	<mx:HBox width="100%" height="40"
+		horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	 	<mx:Button label="Add Portfolio Group" id="btnAddPortfolioGroup" labelPlacement="right" width="140"  
+	 		height="25" enabled="true" tabIndex="1" borderColor="#00FF00"/>
+		
+	 	<mx:Label text="Sort By" fontWeight="bold" height="25" width="55" textAlign="right" paddingTop="3"/>
+		<mx:ComboBox id="cmbPortfolioGroupSortState" editable="false" enabled="true" width="120"
+	 		change="refreshGrid()" height="25" tabIndex="2">
+	 		<mx:dataProvider>
+				<mx:String>All</mx:String>
+				<mx:String>All Active</mx:String>
+				<mx:String>All But Deleted</mx:String>
+			</mx:dataProvider>
+	 	</mx:ComboBox>
+	 	<mx:Label text="Search" fontWeight="bold" width="75" textAlign="right" paddingTop="3"/>
+	 	<flexlib:PromptingTextInput id="searchTextBox" width="200" prompt="Search Name or Description" change="refreshGrid()" tabIndex="3"/>
+	</mx:HBox>
+
+	<mx:DataGrid width="100%" height="100%" borderStyle="solid" dataProvider="{this.portfolioGroupsListData}" id="grdPortfolioList" headerRelease="resetGrid();" horizontalScrollPolicy="auto" verticalScrollPolicy="auto">
+		<mx:columns>
+			<mx:DataGridColumn headerText="ID" dataField="Id" width="50"/>
+			<mx:DataGridColumn headerText="Name" dataField="Name" width="200"/>
+			<mx:DataGridColumn headerText="Description" dataField="Description" />
+			<mx:DataGridColumn headerText="Status" dataField="Status" width="100"/>
+			<mx:DataGridColumn headerText="Created Date" dataField="CreatedDate" width="220"/>
+			<mx:DataGridColumn headerText="Modified Date" dataField="ModifiedDate" width="100"/>
+		</mx:columns>	
+	</mx:DataGrid>
+</mx:VBox>

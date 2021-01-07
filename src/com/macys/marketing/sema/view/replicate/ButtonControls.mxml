@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Script>
+		<![CDATA[
+			
+			public var proxy:Object;
+			
+			[Bindable]
+ 			public var copyEnabled:Boolean;
+ 			
+ 			[Bindable]
+ 			public var pasteEnabled:Boolean;
+ 			
+ 			[Bindable]
+ 			public var clearEnabled:Boolean;
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Button width="105" height="35" color="#0B333C" id="btnCopyGrps1" labelPlacement="right" 
+		x="10"
+		cornerRadius="5" enabled="{copyEnabled}" label="Copy" tabIndex="21" click="proxy.handleCopyButtonClick(event)"/>
+	<mx:Button width="105" height="35" color="#0B333C" id="btnPasteGrps1" labelPlacement="right" 
+		x="126"
+		cornerRadius="5" enabled="{pasteEnabled}" label="Paste" tabIndex="22" click="proxy.handlePasteButton(event)"/>
+	<mx:Button width="145" height="35" color="#0B333C" id="btnClearGrps1" labelPlacement="right" 
+		x="239"
+		cornerRadius="5" enabled="{clearEnabled}" label="Clear Clipboard" tabIndex="23" click="proxy.handleClearButton(event)"/>
+</mx:HBox>

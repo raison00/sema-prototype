@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	label="Service Tester" 
+	
+	 height="622" backgroundColor="#0F128D" width="767">
+	
+	<mx:Label text="Campaign:  GetAllCampaigns Test " width="545" height="57" fontFamily="Times New Roman" fontSize="30" fontWeight="bold" enabled="true" horizontalCenter="-101" verticalCenter="-255" color="#E8F4F7"/>
+
+</mx:Canvas>
+
+	
+	
+

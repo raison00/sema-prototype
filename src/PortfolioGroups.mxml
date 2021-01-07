@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:flexlib="http://code.google.com/p/flexlib/" 
+	width="100%" height="100%" label="Portfolios" 
+	paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+	horizontalScrollPolicy="off" activate="clear()" verticalScrollPolicy="off">
+		
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			[Bindable] public var portfolioListData : ArrayCollection;
+			
+			private function gridFilter(item:Object):Boolean 
+			{
+				var viewable : Boolean = true;
+				try
+				{
+					if ((cmbPortfolioSortState.selectedIndex==1) &&(item.Status!="Enabled"))
+					{
+						viewable = false	
+					}
+	            	else if ((cmbPortfolioSortState.selectedIndex==2)&&(item.Status=="Deleted"))
+	            	{
+	            		viewable = false;
+	            	}
+	            	
+	            	if ((viewable)&&(searchTextBox.text.toString().length>0))
+	            	{
+	            		viewable = false;
+	            		if (item.Description.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+	            		{
+	            			viewable = true;
+	            		}
+	            		if (item.Name.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+	            		{
+	            			viewable = true;
+	            		}
+	            	}
+	   			}
+	   			catch (e : Error)
+	   			{
+	   				trace ("This should not return any error");
+	   			}
+            	return viewable;
+        	}
+        	
+			public function refreshGrid() : void
+			{
+				if (portfolioListData != null)
+				{
+					portfolioListData.filterFunction = gridFilter;
+					portfolioListData.refresh();
+				}
+			}
+			
+			public function clear() : void
+			{
+				try
+				{
+					searchTextBox.text = "";
+					cmbPortfolioSortState.selectedIndex = 0;
+					refreshGrid();
+				}
+				catch (e : Error)
+				{
+					//This happens whne the component is created at first time. Needs preloading of components.
+				}
+			}
+						
+			private function resetGrid() : void
+			{
+				if (portfolioListData != null){										
+					dgPortfolios.selectedItem = null;	
+					dgPortfolios.scrollToIndex(0);													
+				}
+			}
+		]]>
+	</mx:Script>
+	
+
+	<mx:HBox width="100%" height="50">
+	 	<mx:Label text="Sort By" fontWeight="bold" height="20" width="54" textAlign="right"/> 
+	 	<mx:ComboBox id="cmbPortfolioSortState" editable="false" enabled="true" width="114"
+	 		change="refreshGrid()" height="20" tabIndex="2">
+	 		<mx:dataProvider>
+				<mx:String>All</mx:String>
+				<mx:String>All Active</mx:String>
+				<mx:String>All But Deleted</mx:String>
+			</mx:dataProvider>
+	 	</mx:ComboBox>
+	 	<mx:Label text="Search" fontWeight="bold" width="75" textAlign="right"/>
+	 	<flexlib:PromptingTextInput id="searchTextBox" y="8" prompt="Search Name or Description" change="refreshGrid()" tabIndex="1"/>
+	</mx:HBox>	
+	
+	<mx:DataGrid width="100%" height="100%" borderStyle="solid" dataProvider="{this.portfolioListData}" id="dgPortfolios" headerRelease="resetGrid();"
+			verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name" dataField="Name"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status"/>
+			<mx:DataGridColumn headerText="Description" dataField="Description"/>
+		</mx:columns>
+	</mx:DataGrid>
+</mx:VBox>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="850" height="650" initialize="init(event)">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.event.adcopy.ReplicateAdCopyEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+			
+			
+			public function init(event:Event) : void {
+				model = SEMAModelLocator.getInstance();
+			}
+			
+			public function handleSubmit(event:Event):void {
+				
+				
+				CairngormEventDispatcher.getInstance().dispatchEvent(new ReplicateAdCopyEvent(Number(sourceEntityId.text),Number(parentDestinationEntityId.text)));		
+				resultsPane.visible = true;		
+			}
+			
+		]]>
+	</mx:Script>
+
+
+	<!-- INPUT AREA -->
+	<mx:HBox>
+		<mx:Label text="Source Entity Id"/>
+		<mx:TextInput id="sourceEntityId" />
+	</mx:HBox>
+		
+	<mx:HBox>
+		<mx:Label text="Parent Destination Entity Id"/>
+		<mx:TextInput id="parentDestinationEntityId"/>
+	</mx:HBox>
+	
+	<mx:Button id="submit" label="Submit" click="handleSubmit(event)"/>
+	
+	<!-- OUTPUT AREA  -->
+	<mx:VBox id="resultsPane" visible="false" width="850">
+		
+		<mx:HRule width="850" height="1"/>
+		<mx:HBox>
+			<mx:Label text="New Entity Id:"/>
+			<mx:Text text="{model.replicateAdCopyVO.id}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Parent Entity Id:"/>
+			<mx:Text text="{model.replicateAdCopyVO.groupId}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Status:"/>
+			<mx:Text text="{model.replicateAdCopyVO.status}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="State:"/>
+			<mx:Text text="{model.replicateAdCopyVO.state}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Headline:"/>
+			<mx:Text text="{model.replicateAdCopyVO.headline}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Description1:"/>
+			<mx:Text text="{model.replicateAdCopyVO.description1}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Description2:"/>
+			<mx:Text text="{model.replicateAdCopyVO.description2}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Display Url:"/>
+			<mx:Text text="{model.replicateAdCopyVO.displayUrl}"/>
+		</mx:HBox>
+		
+		<mx:HBox>
+			<mx:Label text="Destination Url:"/>
+			<mx:Text text="{model.replicateAdCopyVO.destinationUrl}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Vendor Policy Exemption Request:"/>
+			<mx:Text text="{model.replicateAdCopyVO.vendorPolicyExemptionRequest}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Expiration Date"/>
+			<mx:Text text="{model.replicateAdCopyVO.expirationDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Effective Date"/>
+			<mx:Text text="{model.replicateAdCopyVO.effectiveDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Created"/>
+			<mx:Text text="{model.replicateAdCopyVO.createdDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Modified"/>
+			<mx:Text text="{model.replicateAdCopyVO.modifiedDate}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Created By"/>
+			<mx:Text text="{model.replicateAdCopyVO.createdBy}"/>
+		</mx:HBox>
+
+		<mx:HBox>
+			<mx:Label text="Modified By"/>
+			<mx:Text text="{model.replicateAdCopyVO.modifiedBy}"/>
+		</mx:HBox>
+
+
+
+	</mx:VBox>
+	
+	
+	
+</mx:VBox>

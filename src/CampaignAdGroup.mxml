@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	       label="Ad Groups" xmlns:flexlib="flexlib.controls.*" 
+	       initialize="init(event)"
+	       verticalScrollPolicy="off" horizontalScrollPolicy="off"
+		   xmlns:replicate="com.macys.marketing.sema.view.replicate.*"
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" 
+		   activate="clear()">
+	       
+	<mx:Script>
+ 		<![CDATA[
+ 			import mx.core.Application;
+ 			import mx.controls.Alert;
+ 			import com.macys.marketing.sema.view.event.ReplicateEvent;
+ 			import com.macys.marketing.sema.view.event.ViewEventDispatcher;
+ 			import com.macys.marketing.sema.model.type.ReplicateToken;
+ 			import com.macys.marketing.sema.view.replicate.ConfirmationDialog;
+ 			import mx.core.IFlexDisplayObject;
+ 			import mx.managers.PopUpManager;
+		  	import mx.collections.ArrayCollection;	 	  	
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			import com.macys.marketing.sema.event.adgroup.ReplicateAdGroupEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import mx.collections.IList;
+			
+			private var sourceType:String;
+			
+			[Bindable] 
+			public var model:SEMAModelLocator;
+				
+ 			[Bindable] 
+ 			public var adGroupsListData : ArrayCollection; 	
+ 			
+ 			public function init(event:Event):void 
+ 			{
+				model = SEMAModelLocator.getInstance();		
+				sourceType = ReplicateToken.kAdGroup;	
+				ViewEventDispatcher.addViewEventListener(ReplicateEvent.REPLICATE_EVENT, handleReplication);
+ 			}	
+ 			
+ 			[Bindable]
+ 			public var copyEnabled:Boolean;
+ 			[Bindable]
+ 			public var pasteEnabled:Boolean;
+ 			[Bindable]
+ 			public var clearEnabled:Boolean;
+ 			
+ 			public function setCopyEnabled(value:Boolean):void 
+ 			{
+ 				trace("[CampaignAdGroup] setCopyEnabled:", value);
+ 				copyEnabled = true;
+ 			}
+ 			
+ 			public function setPasteEnabled(value:Boolean):void 
+ 			{
+ 				pasteEnabled = value;
+ 			}
+ 			
+ 			public function setClearEnabled(value:Boolean):void
+ 			{
+ 				clearEnabled = value;
+ 			}
+ 			
+ 			public function handleCopyButtonClick(event:Event):void 
+ 			{
+ 				if(dgAdGroup.selectedIndex >= 0) 
+ 				{
+ 					var token:ReplicateToken = new ReplicateToken();
+ 					token.sourceType = sourceType;
+ 					token.sourceId = dgAdGroup.selectedItem.Id;
+ 					token.targetId = Number(Application.application.customTreeView.treeList.selectedItem.@campaignID);
+			   		token.targetName = Application.application.customTreeView.treeList.selectedItem.@label;
+			   		token.targetType = ReplicateToken.kAdCampaign;
+ 					model.replicationModel.add(ReplicateToken.kAdGroup, token);
+ 					setClearEnabled(true);
+ 					setPasteEnabled(true);
+ 				}
+ 			}
+ 			
+ 			public function handlePasteButton(event:Event):void
+ 			{
+ 				Alert.show("Do you want to copy this ad group to \"" + model.replicationModel.retrieve(ReplicateToken.kAdGroup).targetName + "\"?", "Ad Group Replication", Alert.YES|Alert.NO, this, handlePasteConfirmation,null ,Alert.NO);
+ 			}
+ 			
+ 			public function handlePasteConfirmation(event:Event):void 
+ 			{
+ 				var token:ReplicateToken = model.replicationModel.retrieve(ReplicateToken.kAdGroup);
+ 				if (token.sourceId >= 0 && token.targetId >= 0)
+ 				{
+ 					
+ 					/* if (token.targetType == ReplicateToken.kAdCampaign && token.sourceType == ReplicateToken.kAdGroup) 
+ 					{ */
+						CairngormEventDispatcher.getInstance().dispatchEvent(new ReplicateAdGroupEvent(token.sourceId,token.targetId));
+ 					/* }
+ 					else 
+ 					{
+ 						// we can't copy to this node
+ 						mx.controls.Alert.show("The item " + token.sourceType + " cannot be copied to " + token.targetType + ".");
+ 					} */
+ 				} 
+ 				else 
+ 				{
+ 					// No target selected
+ 					mx.controls.Alert.show("Please select a paste target.");
+ 				}
+ 			}
+ 			
+ 			public function handleClearButton(event:Event):void 
+ 			{
+ 				model.replicationModel.clear(ReplicateToken.kAdGroup);
+				setPasteEnabled(false);
+				setClearEnabled(false);
+				mx.controls.Alert.show("The clipboard has been cleared.");
+ 			}
+ 			
+ 			private function gridFilter(item:Object):Boolean 
+			{
+				var viewable : Boolean = true;
+				try
+				{
+					if ((cmbAdGroupSortState.selectedIndex==1) &&(item.Status!="Enabled"))
+					{
+						viewable = false	
+					}
+	            	else if ((cmbAdGroupSortState.selectedIndex==2)&&(item.Status=="Deleted"))
+	            	{
+	            		viewable = false;
+	            	}
+            	
+            		if ((viewable)&&(searchTextBox.text.toString().length>0))
+            		{
+            			viewable = false;
+            			if (item.AdGroupName.toLowerCase().indexOf(searchTextBox.text.toLowerCase())>=0)
+            			{
+            				viewable = true;
+            			}
+            		}
+				}
+				catch ( e : Error)
+				{
+					trace ("This error cannot take place");
+				}
+				
+				if ((viewable==false)&&(dgAdGroup.selectedItem==item)) 
+				{
+					copyEnabled = false;
+					dgAdGroup.selectedIndex=-1;
+				}
+            	return viewable;
+        	}
+        	
+			//This should be via events (observer) instead of a public field        	
+			public function refreshGrid() : void
+			{
+				if (adGroupsListData != null)
+				{
+					adGroupsListData.filterFunction = gridFilter;
+					adGroupsListData.refresh();
+				}
+			}
+			
+			public function clear() : void
+			{
+				try
+				{
+					searchTextBox.text = "";
+					cmbAdGroupSortState.selectedIndex = 0;
+					refreshGrid();
+				}
+				catch (e : Error)
+				{
+					//This happens whne the component is created at first time. Needs preloading of components.
+				}
+			}
+			
+			public function handleGroupSelection(event:Event):void
+			{
+				if (event.target.selectedIndex != -1)
+				{
+					copyEnabled = true;
+				}
+				else
+				{
+					copyEnabled = false;
+					clearEnabled = false;
+				}
+				//TODO multiple selection support...
+			}
+			
+			private function handleReplication(event:Event) : void
+			{
+				//do something here to kick the lists if necessary
+			}
+			
+			private function resetGrid() : void
+			{
+				if (adGroupsListData != null){										
+					dgAdGroup.selectedItem = null;	
+					dgAdGroup.scrollToIndex(0);													
+				}
+			}
+			
+ 		]]>
+ 	</mx:Script>
+	<mx:HBox width="100%" height="30">
+	 	<mx:Label text="Sort By" fontWeight="bold" height="20" width="54" textAlign="right"/>
+	 	<mx:ComboBox id="cmbAdGroupSortState" editable="false" enabled="true" width="114"
+	 		change="refreshGrid()" height="20" tabIndex="2">
+	 		<mx:dataProvider>
+				<mx:String>All</mx:String>
+				<mx:String>All Active</mx:String>
+				<mx:String>All But Deleted</mx:String>
+			</mx:dataProvider>
+	 	</mx:ComboBox>
+	 	<mx:Label text="Search" fontWeight="bold" width="75" textAlign="right"/>
+	 	<flexlib:PromptingTextInput id="searchTextBox" x="318" y="8" prompt="Search Name" change="refreshGrid()" tabIndex="1"/>
+	</mx:HBox>
+	
+	<replicate:ButtonControls id="replicate" 
+		                      copyEnabled="{copyEnabled}" pasteEnabled="{pasteEnabled}" clearEnabled="{clearEnabled}"
+		                      proxy="{this}"/>
+		                      
+	<mx:DataGrid borderStyle="solid" width="100%" height="100%" dataProvider="{this.adGroupsListData}" id="dgAdGroup"
+		verticalScrollPolicy="auto" horizontalScrollPolicy="auto" change="handleGroupSelection(event)" headerRelease="resetGrid();"
+                dragEnabled="true">
+		<mx:columns>
+			<mx:DataGridColumn headerText="ID" dataField="Id"/>
+			<mx:DataGridColumn headerText="Name" dataField="AdGroupName"/>
+			<mx:DataGridColumn headerText="Dest. URL" dataField="DefaultDestinationUrl"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status"/>
+			<mx:DataGridColumn headerText="Clicks" dataField="Clicks"/>
+			<mx:DataGridColumn headerText="Impr." dataField="Impressions"/>
+			<mx:DataGridColumn headerText="Cost" dataField="Cost"/>
+			<mx:DataGridColumn headerText="CTR" dataField="CTR"/>
+			<mx:DataGridColumn headerText="CPM" dataField="CPM"/>
+			<mx:DataGridColumn headerText="CPC" dataField="CPC"/>
+			<mx:DataGridColumn headerText="Act. St." dataField="Actual Status"/>
+			<mx:DataGridColumn headerText="Av. CPC" dataField="avgCPC"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+</mx:VBox>

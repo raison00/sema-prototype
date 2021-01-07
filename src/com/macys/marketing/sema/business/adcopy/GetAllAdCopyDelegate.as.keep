@@ -1,0 +1,121 @@
+package com.macys.marketing.sema.business.adcopy
+{
+	import com.macys.marketing.sema.vo.adcopy.AdCopyVO;
+//	import mx.core.Application;
+	
+	public class GetAllAdCopyDelegate
+	{
+    import mx.rpc.soap.WebService;
+    import mx.rpc.events.ResultEvent;
+    import mx.rpc.events.FaultEvent;
+    import mx.rpc.soap.LoadEvent;
+   
+    import com.macys.marketing.sema.model.SEMAModelLocator;
+
+	private var model : SEMAModelLocator = SEMAModelLocator.getInstance();
+	private var ws:WebService;
+ 	
+	public function GetAllAdCopyDelegate()
+		{
+			trace("GetAllAdCopyDelegate: GetAllAdCopyDelegate()");
+			ws = new WebService();
+			test();
+		}
+	
+	 public function test():void {
+		trace("test()");
+		//trace("test() ...Application.application="+Application.application);
+	} 
+    public function execute(groupId:Number):void {
+        
+       // trace("[business] Creating web service request for replicate adcopy entityId " + entityId + ", destinationParentId " + destinationParentId + ".");
+       /*  ws.wsdl = "http://md000yd3219978/SEMAServices/services/v1/AdCopyService?wsdl"
+        ws.endpointURI = "http://md000yd3219978/SEMAServices/services/v1/AdCopyService";
+        ws.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", "jasmine");
+       */ //md000yd3219978
+       //md000yd3162201
+       
+      	/* ws.wsdl = Application.application.serviceRegistry['AdCopyService']+"?wsdl"
+        ws.endpointURI = Application.application.serviceRegistry['AdCopyService'];
+        ws.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", "jasmine");
+        */
+        ws.wsdl = model.serviceRegistry['AdCopyService']+"?wsdl"
+        ws.endpointURI = model.serviceRegistry['AdCopyService'];
+        ws.addSimpleHeader("userName", "http://schemas.macys.com/definitions/ad/v1", "userName", "jasmine");
+        
+        if(ws.canLoadWSDL()) {
+        	trace("GetAllAdCopyDelegate:[business] WSDL URI is valid.");
+    		trace("GetAllAdCopyDelegate:[business] Service:" + ws.toString());
+        } else {
+        	trace("GetAllAdCopyDelegate:[business] WSDL URI is not valid.");
+        }
+        ws.loadWSDL();
+        
+   
+        ws.getAllAdCopy.addEventListener(ResultEvent.RESULT, resultHandler);
+        ws.getAllAdCopy.addEventListener(FaultEvent.FAULT, faultHandler);
+        ws.addEventListener(LoadEvent.LOAD, loadHandler);
+       trace("groupId="+groupId);
+        //ws.getAllAdCopy.send({EntityId:entityId, DestinationParentId:destinationParentId});
+        
+        // Note problem: currently, there are only two group 1 & 2. 
+        //If you enter other than that, it will crash. This need to be solved
+        ws.getAllAdCopy.send(groupId);
+    }
+    
+    // when wsdl load is a success
+    public function loadHandler(event:LoadEvent):void {
+    	
+    	trace("GetAllAdCopyDelegate: [business] WSDL loaded.");
+    	
+    	
+    }
+
+    public function resultHandler(event:ResultEvent):void {
+        trace("GetAllAdCopyDelegate:[business] result recieved: " + event.result.toString());
+        // get result set
+ 
+        var adCopyVO:AdCopyVO; 
+        for(var s:String in event.result) {
+        	trace("member: " + s + " is: " + event.result[s].toString() );
+        	adCopyVO = new AdCopyVO();
+        	adCopyVO.id = event.result[s].Id;
+        	adCopyVO.adVendorId = event.result[s].AdVendorId;
+	       	adCopyVO.groupId = event.result[s].GroupId;
+	       	adCopyVO.status = event.result[s].Status;
+	       	adCopyVO.adVendorStatus = event.result[s].AdVendorStatus;
+	       	adCopyVO.state = event.result[s].State;
+	       	adCopyVO.headline = event.result[s].Headline;
+	       	adCopyVO.description1 = event.result[s].Description1;
+	       	adCopyVO.description2 = event.result[s].Description2;
+	       	adCopyVO.displayUrl = event.result[s].DisplayUrl;
+	       	adCopyVO.publishedDate = event.result[s].PublishedDate;
+	       	adCopyVO.destinationUrl = event.result[s].DestinationUrl;
+	       	adCopyVO.vendorPolicyExemptionRequest = event.result[s].VendorPolicyExemptionRequest;
+	       	adCopyVO.expirationDate = event.result[s].ExpirationDate;
+	       	adCopyVO.effectiveDate = event.result[s].EffectiveDate;
+	       	adCopyVO.type = event.result[s].Type;
+	       	adCopyVO.createdDate = event.result[s].CreatedDate;
+	       	adCopyVO.modifiedDate = event.result[s].ModifiedDate;
+	       	adCopyVO.createdBy = event.result[s].CreatedBy;
+	       	adCopyVO.modifiedBy = event.result[s].ModifiedBy;
+	       	model.allAdCopyVO.addItem(adCopyVO);
+        }
+       
+        trace("GetAllAdCopyDelegate:[business] model updated. model.allAdCopyVO="+model.allAdCopyVO[0].id);
+     	trace("GetAllAdCopyDelegate:[business] model updated. model.allAdCopyVO="+model.allAdCopyVO[0].headline);
+    }
+
+    public function faultHandler(event:FaultEvent):void {
+  		trace("GetAllAdCopyDelegate:[business] WebService error: " + event.fault);
+  		trace("GetAllAdCopyDelegate:[business] Detail: " + event.message); 
+  		
+  		for(var s:String in event.message.body) {
+        	trace("member: " + s + " is: " + event.message.body[s].toString() );
+        }
+  		
+    }
+		
+
+	}
+}

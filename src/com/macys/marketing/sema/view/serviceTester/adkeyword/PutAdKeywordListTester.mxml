@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:flexlib="http://code.google.com/p/flexlib/" width="850" height="650" initialize="init(event)" xmlns:tools="com.macys.marketing.sema.vo.tools.*">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.event.tools.GenerateKeywordsEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			import com.macys.marketing.sema.vo.tools.GenerateKeywordsVO;
+			import com.macys.marketing.sema.vo.tools.GenerateKeywordsMatchTypeVO; 
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+			private var _useSynonym : Boolean;
+			private var _negativeFlag : Boolean;
+			
+			public function init(event:Event) : void {
+				model = SEMAModelLocator.getInstance();
+			}
+			
+			public function handleSubmit(event:Event):void {
+				
+				if (useSynonym.selectedItem == "True") {
+					_useSynonym = true;
+				} else {
+					_useSynonym = false;
+				}
+				
+				if (negativeFlag.selectedItem == "True") {
+					_negativeFlag = true;
+				} else {
+					_negativeFlag = false;
+				}
+				
+				
+				CairngormEventDispatcher.getInstance().dispatchEvent(new GenerateKeywordsEvent(seedKeyword.text,matchType.selectedItem as String,_negativeFlag,_useSynonym));		
+				resultsPane.visible = true;		
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<!-- INPUT AREA -->
+	<mx:HBox>
+		<mx:Label text="Seed Keyword"/>
+		<mx:TextInput id="seedKeyword" />
+	</mx:HBox>
+		
+	<mx:HBox>
+		<mx:Label text="Match Type"/>
+		<mx:ComboBox id="matchType">
+			<mx:dataProvider>
+			<mx:String>Broad</mx:String>
+			<mx:String>Phrase</mx:String>
+			<mx:String>Exact</mx:String>	
+			</mx:dataProvider>
+		</mx:ComboBox>
+	</mx:HBox>
+	
+	<mx:HBox>
+		<mx:Label text="Negative Flag"/>
+		<mx:ComboBox id="negativeFlag">
+			<mx:dataProvider>
+				<mx:String>True</mx:String>
+				<mx:String>False</mx:String>			
+			</mx:dataProvider>
+		</mx:ComboBox>
+	</mx:HBox>
+	
+	
+	<mx:HBox>
+		<mx:Label text="Use Synonym"/>
+		<mx:ComboBox id="useSynonym">
+			<mx:dataProvider>
+				<mx:String>True</mx:String>
+				<mx:String>False</mx:String>			
+			</mx:dataProvider>
+		</mx:ComboBox>
+	</mx:HBox>
+	
+	<mx:Button id="submit" label="Submit" click="handleSubmit(event)"/>
+	
+	<!-- OUTPUT AREA  -->
+	<mx:VBox id="resultsPane" visible="false" width="850">
+		
+		<mx:HRule width="850" height="1"/>
+		<mx:HBox>
+			<mx:Label text="Seed Keyword:"/>
+			<mx:Text text="{model.generateKeywordsVO.seedKeyword}" fontWeight="bold"/>
+		</mx:HBox>
+		<mx:Label text="Related Keywords"/>
+		<mx:DataGrid dataProvider="{model.generateKeywordsVO.relatedKeywords}" width="600">
+			<mx:columns>
+			<mx:DataGridColumn headerText="Related Keywords" dataField="GeneratedKeyword" />
+			<mx:DataGridColumn headerText="Search Volume" dataField="SearchVolumeScale"/>
+			<mx:DataGridColumn headerText="Advertiser Competition" dataField="AdvertiserCompetitionScale"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:Label text="Keywords To Consider"/>
+		<mx:DataGrid dataProvider="{model.generateKeywordsVO.alsoToConsiderKeywords}" width="600">
+			<mx:columns>
+			<mx:DataGridColumn headerText="Keywords To Consider" dataField="GeneratedKeyword" />
+			<mx:DataGridColumn headerText="Search Volume" dataField="SearchVolumeScale"/>
+			<mx:DataGridColumn headerText="Advertiser Competition" dataField="AdvertiserCompetitionScale"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		
+	</mx:VBox>
+	
+	
+	
+</mx:VBox>

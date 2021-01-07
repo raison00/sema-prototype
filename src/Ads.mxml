@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+			width="100%" height="100%" 
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" 
+	       verticalScrollPolicy="auto" horizontalScrollPolicy="auto"
+			xmlns:yahoo="http://www.yahoo.com/astra/2006/mxml" 
+			xmlns:replicate="com.macys.marketing.sema.view.replicate.*"
+			label="Ad Copy" 
+			xmlns:flexlib="http://code.google.com/p/flexlib/" 
+			initialize="init(event)"
+			 >					
+	
+	<mx:Script>
+ 		<![CDATA[
+ 			import mx.core.Application;
+ 			import com.macys.marketing.sema.AdGroupId;
+ 			import mx.events.ValidationResultEvent;
+ 			import mx.events.CloseEvent;
+ 			import com.macys.marketing.sema.model.type.ReplicateToken;
+ 			import mx.controls.Alert;
+		  	import mx.collections.ArrayCollection;	
+		  	import mx.core.IFlexDisplayObject;
+ 			import mx.managers.PopUpManager;	 
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			import com.macys.marketing.sema.event.adcopy.ReplicateAdCopyEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.view.replicate.ConfirmationDialog;
+			
+ 			[Bindable] public var adsListData : ArrayCollection;
+ 			
+ 			private var sourceType:String;
+
+			[Bindable]
+			public var model:SEMAModelLocator;
+ 			
+ 			public function init(event:Event):void 
+ 			{
+				model = SEMAModelLocator.getInstance();		
+				sourceType = ReplicateToken.kAdCopy;
+ 			}
+ 			
+ 			[Bindable]
+ 			public var copyEnabled:Boolean;
+ 			[Bindable]
+ 			public var pasteEnabled:Boolean;
+ 			[Bindable]
+ 			public var clearEnabled:Boolean;
+ 			[Bindable]
+ 			public var dtOriginalAdCopyEffectiveDate : Date;   //AdCopy Effective Date
+           	        [Bindable]
+           	        public var dtOriginalAdCopyExpirationDate : Date;    //AdCopy Expiration Date  
+ 			
+ 			public function setCopyEnabled(value:Boolean):void 
+ 			{
+ 				trace("[Ads] setCopyEnabled:", value);
+ 				copyEnabled = true;
+ 			}
+ 			
+ 			public function setPasteEnabled(value:Boolean):void 
+ 			{
+ 				trace("[Ads] setPasteEnabled");
+ 				pasteEnabled = value;
+ 			}
+ 			
+ 			public function setClearEnabled(value:Boolean):void
+ 			{
+ 				trace("[Ads setClearEnabled");
+ 				clearEnabled = value;
+ 			}
+ 			
+ 			public function handleCopyButtonClick(event:Event):void 
+ 			{
+ 				trace("[Ads] handleCopyButtonClick");
+ 				if(grdAdCopies.selectedIndex >= 0) 
+ 				{
+ 					var token:ReplicateToken = new ReplicateToken();
+ 					token.sourceType = sourceType;
+ 					token.sourceId = grdAdCopies.selectedItem.Id;
+ 					token.targetId = Number(Application.application.customTreeView.treeList.selectedItem.@groupID);
+			   		token.targetName = Application.application.customTreeView.treeList.selectedItem.@label;
+			   		token.targetType = ReplicateToken.kAdGroup;
+ 					model.replicationModel.add(ReplicateToken.kAdCopy, token);
+ 					setClearEnabled(true);
+ 					setPasteEnabled(true);
+ 				}
+ 			}
+ 			
+ 			public function handlePasteButton(event:Event):void
+ 			{
+ 				Alert.show("Do you want to copy this Ad to \"" + model.replicationModel.retrieve(ReplicateToken.kAdCopy).targetName + "\"?", "Ad Copy Replication", Alert.YES|Alert.NO, this, handlePasteConfirmation,null ,Alert.NO);
+ 			}
+ 			
+ 			public function handlePasteConfirmation(event:CloseEvent):void 
+ 			{
+ 				if(event.detail == Alert.YES){
+ 				var token:ReplicateToken = model.replicationModel.retrieve(ReplicateToken.kAdCopy);
+ 				
+ 				if(token.sourceId >= 0 && token.targetId >= 0) 
+ 				{
+ 					
+ 					/* if(token.targetType == ReplicateToken.kAdGroup && 
+ 					   token.sourceType == ReplicateToken.kAdCopy) 
+ 					{ */
+						// call event
+						CairngormEventDispatcher.getInstance().dispatchEvent(new ReplicateAdCopyEvent(token.sourceId,
+						                                                                              token.targetId));
+ 					/* } 
+ 					else 
+ 					{
+ 						// we can't copy to this node
+ 						mx.controls.Alert.show("The item " + 
+ 												token.sourceType + 
+ 												" cannot be copied to " + 
+ 												token.targetType + ".");
+ 					} */
+ 				} 
+ 				else 
+ 				{
+ 					// No target selected
+ 					mx.controls.Alert.show("Please select a paste target.");
+ 				}
+ 			}
+ 			
+ 			}
+ 			
+ 			public function handleClearButton(event:Event):void 
+ 			{
+ 				trace("[Ads] handleClearButton");
+ 				model.replicationModel.clear(ReplicateToken.kAdCopy);
+				
+				setPasteEnabled(false);
+				setClearEnabled(false);
+				
+				mx.controls.Alert.show("The clipboard has been cleared.");
+ 			}
+ 			
+ 			public function handleAdCopySelection(event:Event):void
+			{
+				if (event.target.selectedIndex != -1)
+				{
+					copyEnabled = true;
+				}
+				else
+				{
+					copyEnabled = false;
+					clearEnabled = false;
+				}
+				//TODO multiple selection support...
+			}
+ 							
+			    		
+           		
+                        private function handleInvalidDate(event:ValidationResultEvent):void
+                        {
+            	              if(event.type==ValidationResultEvent.INVALID)  
+		       	      {
+		           	//Validate and reset the selected date to its original value
+		              	
+		       		var objDateField:DateField = DateField(event.target.source);
+		    	    switch(objDateField.id)
+		            {
+		            	//Effective Date
+		            	case "dtEffectiveDate" : 
+		            		objDateField.selectedDate = dtOriginalAdCopyEffectiveDate
+		               		break;
+		               	
+		               	//Expiration Date
+		               	case "dtExpirationDate":
+		               		objDateField.selectedDate = dtOriginalAdCopyExpirationDate;
+		               		break;
+		            }
+			 	}
+        	}
+ 							
+ 		]]>
+ 	</mx:Script>
+	
+ 	<mx:DateValidator id="vldEffectiveDate" 
+        	  source="{dtEffectiveDate}" property="value" 
+        	  inputFormat="mm/dd/yyyy"
+        	  allowedFormatChars="/" 
+        	  invalid="handleInvalidDate(event);"
+        	  />
+        					  
+    <mx:DateValidator id="vldExpirationDate" 
+        	  source="{dtExpirationDate}" property="value" 
+        	  inputFormat="mm/dd/yyyy"
+        	  allowedFormatChars="/" 
+        	  invalid="handleInvalidDate(event);"
+        	  />
+	
+	
+	
+	<mx:Canvas width="100%" height="50">
+	
+		<mx:Button y="3" label="Add" id="btnAddAd" labelPlacement="right" x="4" width="105"  
+			height="35" icon="@Embed('../icons/new.png')" 
+			enabled="true" tabIndex="1" />
+			
+		<mx:Button y="3" label="Save" width="105" height="35" color="#0B333C" id="btnSaveAd" 
+			labelPlacement="right" x="4" 							
+			icon="@Embed('../icons/save.png')"
+		    enabled="true" tabIndex="3" />
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnEditAds" labelPlacement="right" 
+			x="117"
+			cornerRadius="5" enabled="true" label="Edit" tabIndex="2"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnCancelAds" labelPlacement="right" 
+			x="117"
+			cornerRadius="5" enabled="true" label="Cancel" tabIndex="4"/>
+			
+		<replicate:ButtonControls id="replicate" y="3" x="232"
+		                      copyEnabled="{copyEnabled}" pasteEnabled="{pasteEnabled}" clearEnabled="{clearEnabled}"
+		                      paddingLeft="5" proxy="{this}"/>
+		
+	</mx:Canvas>
+	
+	<mx:DataGrid width="100%" height="100%" borderStyle="solid" id="grdAdCopies" editable="false" dragEnabled="true"
+		enabled="true" minHeight="150" tabEnabled="false"
+		top="54" horizontalCenter="0" textAlign="left"
+	    backgroundAlpha="0.5" dataProvider="{this.adsListData}" 
+	    fontSize="9" horizontalScrollPolicy="auto" backgroundDisabledColor="#FFFFFF"
+	    change="handleAdCopySelection(event)">						
+		<mx:columns>
+			<mx:DataGridColumn headerText="Ad Copy Id" dataField="Id"/>
+			<mx:DataGridColumn headerText="Headline" dataField="Headline"/>			
+			<mx:DataGridColumn headerText="Type" dataField="Type"/>
+			<mx:DataGridColumn headerText="Status" dataField="Status"/>
+			<mx:DataGridColumn headerText="Clicks" dataField="Clicks"/>			
+			<mx:DataGridColumn headerText="Impressions" dataField="Impressions"/>
+			<mx:DataGridColumn headerText="Cost" dataField="Cost"/>
+			<mx:DataGridColumn headerText="CTR" dataField="CTR"/>
+			<mx:DataGridColumn headerText="CPM" dataField="CPM"/>
+			<mx:DataGridColumn headerText="CPC" dataField="CPC"/>
+			<mx:DataGridColumn headerText="Actual Status" dataField="Actual Status"/>
+			<mx:DataGridColumn headerText="AVG. CPC" dataField="AVG. CPC"/>
+		</mx:columns>
+	</mx:DataGrid>
+<mx:HBox width="100%" height="100%">
+	<mx:Canvas label="Description" x="10" y="171" width="450" height="275" id="tbAdsDescription">		
+		<mx:Label x="10" y="7" text="Headline: *" width="85" fontWeight="bold"/>
+		<flexlib:PromptingTextInput prompt="Headline" x="103" y="5" width="335" id="txtHeadline" enabled="true" maxChars="25" tabIndex="5" backgroundDisabledColor="#FFFFFF" keyUp="lblHeadlinePreview.text=txtHeadline.text;"/>
+		
+		<mx:Label x="10" y="33" text="Descr. Line 1: *" width="96" fontWeight="bold"/>
+		<flexlib:PromptingTextInput prompt="Description 1" x="103" y="31" width="335" id="txtDescOne" enabled="true" maxChars="35" tabIndex="6" backgroundDisabledColor="#FFFFFF" keyUp="lblDesc1Preview.text=txtDescOne.text"/>
+		
+		<mx:Label x="10" y="59" text="Descr. Line 2: *" width="96" fontWeight="bold" textAlign="left"/>
+		<flexlib:PromptingTextInput prompt="Description 2" x="103" y="57" width="335" id="txtDescTwo" enabled="true" maxChars="35" tabIndex="7" backgroundDisabledColor="#FFFFFF" keyUp="lblDesc2Preview.text=txtDescTwo.text"/>
+		
+		<mx:Label x="9" y="85" text="Disp. URL: *" width="85" fontWeight="bold" textAlign="left"/>
+		<flexlib:PromptingTextInput prompt="Display URL" x="102" y="83" width="335" id="txtDispUrl" enabled="true" maxChars="35" tabIndex="8" backgroundDisabledColor="#FFFFFF" keyUp="lblDispUrlPreview.text=txtDispUrl.text"/>
+		
+		<mx:Label x="10" y="110" text="Dest. URL: *" width="85" fontWeight="bold"/>
+		<flexlib:PromptingTextInput prompt="Full URL (http://www.macys.com)" x="102" y="108" width="335" id="txtDestUrl" enabled="true" maxChars="1024" tabIndex="9" backgroundDisabledColor="#FFFFFF"/>
+		
+		<mx:Label x="10" y="137" text="Desired Status:" width="96" fontWeight="bold"/>
+		<mx:ComboBox  x="103" y="135" width="130" id="cmbAdCopyStatus" enabled="true" editable="false" 
+			cornerRadius="0" tabIndex="10">
+			<mx:dataProvider>
+				<mx:String>Enabled</mx:String>
+				<mx:String>Paused</mx:String>
+				<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		
+		<mx:Label x="254" y="137" text="Type:" width="41" fontWeight="bold" id="lblType"/>
+		<mx:ComboBox x="339" y="135" width="98" id="cmbAdCopyType" enabled="false" editable="false" cornerRadius="0" tabIndex="11">
+			<mx:dataProvider>
+				<mx:String>PROMO</mx:String>	
+				<mx:String>DIDO</mx:String>				
+				<mx:String>UNKNOWN</mx:String>			
+			</mx:dataProvider>	
+		</mx:ComboBox>
+
+		<mx:Label x="10" y="161" text="Actual Status" fontWeight="bold"/>
+		<mx:Label x="103" y="161" width="130" id="lblVendorStatus" tabIndex="12"/>
+		<mx:Text x="190" y="161" width="130" id="txtDisapproved" height="18" color="#940505" fontWeight="bold" fontStyle="normal"/>
+		<mx:Label x="10" y="185" text="Vendor Policy Exception" fontWeight="bold" width="145"/>
+		<mx:TextInput x="163" y="183" width="277" id="txtVendorPolicyExcemption" enabled="false" backgroundDisabledColor="#FFFFFF" tabIndex="13"/>
+
+		<mx:HRule x="10" y="209" width="427" height="1"/>
+		
+		<mx:Button x="10" y="242" label="Schedule Me" cornerRadius="0" width="107" id="btnSchedule" tabIndex="14"/>
+		<mx:Button x="10" y="242" label="Cancel" cornerRadius="0" width="107" id="btnCancelSchedule" tabIndex="17"/>
+		<mx:Label x="10" y="213" text="Scheduled Date Range:" width="145" fontWeight="bold"/>
+		<mx:DateField x="164" y="216" width="123" id="dtEffectiveDate" text="Start Date" selectableRange="{ {rangeStart: new Date()} }" yearNavigationEnabled="true" enabled="false" tabIndex="15" restrict="0-9/" focusOut="vldEffectiveDate.validate();" editable="true"/>
+		<mx:DateField x="314" y="216" width="123" id="dtExpirationDate" text="End Date" selectableRange="{ {rangeStart: new Date()} }" yearNavigationEnabled="true" enabled="false" tabIndex="16" restrict="0-9/" focusOut="vldExpirationDate.validate();" editable="true"/>
+	</mx:Canvas>
+	<mx:Panel width="200" height="100%" minHeight="150" maxHeight="200" layout="absolute" title="Ad Preview" roundedBottomCorners="true" borderThicknessTop="0" headerHeight="20" backgroundAlpha="1.0" horizontalAlign="left">
+		<mx:Label id="lblHeadlinePreview" x="10" y="11" width="159" color="#0024FF" 
+			fontWeight="bold" fontSize="12" textDecoration="underline" text="{txtHeadline.text}"/>
+		<mx:Label id="lblDesc1Preview" x="10" y="34" width="159" height="19" fontWeight="bold" text="{txtDescOne.text}"/>
+		<mx:Label id="lblDesc2Preview" x="10" y="50" width="159" height="19" fontWeight="bold" text="{txtDescTwo.text}"/>
+		<mx:Label id="lblDispUrlPreview" x="10" y="69" width="159" height="19" color="#0BB61F" fontWeight="bold" text="{txtDispUrl.text}"/>
+	</mx:Panel>
+</mx:HBox>
+	
+</mx:VBox>

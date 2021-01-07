@@ -1,0 +1,89 @@
+package com.macys.marketing.sema.model
+{
+	import com.adobe.cairngorm.model.ModelLocator;
+	import com.macys.marketing.sema.vo.adcopy.ReplicateAdCopyVO;
+	import com.macys.marketing.sema.vo.adgroup.ReplicateAdGroupVO;
+	import com.macys.marketing.sema.vo.adkeyword.ReplicateAdKeywordVO;
+	import com.macys.marketing.sema.vo.tools.GenerateKeywordsVO;
+	
+	import flash.utils.Dictionary;
+	import mx.collections.ArrayCollection;
+
+
+[Bindable]
+public class SEMAModelLocator implements com.adobe.cairngorm.model.ModelLocator
+{
+
+public var replicateAdCopyVO:ReplicateAdCopyVO = new ReplicateAdCopyVO(); 
+public var replicateAdKeywordVO:ReplicateAdKeywordVO = new ReplicateAdKeywordVO;
+public var replicateAdGroupVO:ReplicateAdGroupVO = new ReplicateAdGroupVO;
+public var generateKeywordsVO:GenerateKeywordsVO = new GenerateKeywordsVO;
+
+// AK replicate UI
+private var _replicationSourceId:Number;
+private var _replicationTargetId:Number;
+private var _replicationSourceType:String = "";
+private var _replicationTargetType:String = "";
+// / AK
+
+private static var modelLocator : SEMAModelLocator;
+
+public function SEMAModelLocator() 
+  {
+  if ( modelLocator != null )
+throw new Error( "A single instance of ModelLocator is allowed." );
+  }
+    
+    
+
+public static function getInstance() : com.macys.marketing.sema.model.SEMAModelLocator
+{
+if ( modelLocator == null )
+modelLocator = new SEMAModelLocator();
+
+return modelLocator;
+    }
+   
+  // AK
+  public function get replicationSourceId():Number {
+  return _replicationSourceId;
+  }
+   
+  public function set replicationSourceId(sourceId:Number):void {
+  _replicationSourceId = sourceId;
+  }
+   
+  public function get replicationSourceType():String {
+  return _replicationSourceType;
+  }
+   
+  public function set replicationSourceType(sourceType:String):void {
+  _replicationSourceType = sourceType;
+  }
+   
+  public function get replicationTargetId():Number {
+  return _replicationTargetId;
+  }
+   
+  public function set replicationTargetId(targetId:Number):void {
+  _replicationTargetId = targetId;
+  }
+   
+  public function get replicationTargetType():String {
+  return _replicationTargetType;
+  }
+   
+  public function set replicationTargetType(targetType:String):void {
+  _replicationTargetType = targetType;
+  }
+   
+  // /AK
+  
+  	// Jasmine here:
+	public var allAdCopyVO:ArrayCollection = new ArrayCollection();
+	// I think we should move the logic that creates the serviceRgistry in SEMATest.mxml
+	// to here. This variable is used by every *Delegate.as file to webservise url.
+	public var serviceRegistry:Dictionary = new Dictionary();
+}
+}
+		

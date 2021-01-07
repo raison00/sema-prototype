@@ -1,0 +1,68 @@
+package com.macys.marketing.sema.model
+{
+	import com.adobe.cairngorm.model.ModelLocator;
+	import com.macys.marketing.sema.vo.adcopy.ReplicateAdCopyVO;
+	import com.macys.marketing.sema.vo.adgroup.ReplicateAdGroupVO;
+	import com.macys.marketing.sema.vo.adkeyword.ReplicateAdKeywordVO;
+	import com.macys.marketing.sema.vo.tools.GenerateKeywordsVO;
+	
+	import flash.utils.Dictionary;
+	
+	import mx.collections.ArrayCollection;
+	
+	[Bindable]
+	public class SEMAModelLocator implements com.adobe.cairngorm.model.ModelLocator
+	{
+		
+		
+		public var serviceRegistry:Dictionary = new Dictionary();
+		public var semaUser : SemaUser = new SemaUser("Lenny","semauser");
+		
+		
+		public var replicateAdCopyVO:ReplicateAdCopyVO = new ReplicateAdCopyVO();
+		public var allAdCopyVO:ArrayCollection = new ArrayCollection();
+		
+		 
+		public var replicateAdKeywordVO:ReplicateAdKeywordVO = new ReplicateAdKeywordVO;
+		
+		public var replicateAdGroupVO:ReplicateAdGroupVO = new ReplicateAdGroupVO;
+		
+		public var generateKeywordsVO:GenerateKeywordsVO = new GenerateKeywordsVO;
+		
+		public var replicationModel:ReplicationModel = new ReplicationModel();
+		
+		
+		
+		
+		private static var modelLocator : SEMAModelLocator;
+		
+			public function SEMAModelLocator() 
+	   		{
+	   			trace("SEMAModelLocator: SEMAModelLocator()");
+	   			//if ( modelLocator != null )
+				//throw new Error( "Only a single instance of ModelLocator is allowed." );
+	   			//serviceRegistry["AdCopyService"]="http://md000yd3162201:8081/SEMAServices/services/v1/AdCopyService";
+	   		}
+   	
+   	
+		
+			public static function getInstance() : com.macys.marketing.sema.model.SEMAModelLocator
+			{
+				trace("SEMAModelLocator: getInstance()");
+				if ( modelLocator == null ) {
+					modelLocator = new SEMAModelLocator();
+		
+					var serviceRegistry: ServiceRegistry = new ServiceRegistry(modelLocator);
+					serviceRegistry.initializeServiceRegistry();
+				}
+				
+				return modelLocator;
+	   		 }
+  	
+  	// Jasmine here:
+	
+	// I think we should move the logic that creates the serviceRgistry in SEMATest.mxml
+	// to here. This variable is used by every *Delegate.as file to webservise url.
+	
+	}
+}

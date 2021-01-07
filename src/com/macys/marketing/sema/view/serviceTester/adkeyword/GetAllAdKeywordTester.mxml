@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="850" height="650" initialize="init(event)">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.macys.marketing.sema.control.ServiceController;
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.macys.marketing.sema.event.adkeyword.GetAllAdKeywordsEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+				
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+							
+			[Bindable]
+			public var model:SEMAModelLocator;
+			
+	
+			public function init(event:Event) : void {
+				model = SEMAModelLocator.getInstance();
+			}
+			
+			public function handleSubmit(event:Event):void {
+				var myEvent:CairngormEvent = new CairngormEvent(ServiceController.EVENT_GETALL_ADKEYWORDS);
+				myEvent.data = Number(groupId.text);
+				
+				CairngormEventDispatcher.getInstance().dispatchEvent(myEvent);	
+			}
+		]]>
+	</mx:Script>
+	
+	
+	<!-- INPUT AREA -->
+	<mx:HBox>
+		<mx:Label text="Group Id"/>
+		<mx:TextInput id="groupId" />
+	</mx:HBox>
+		
+	<mx:Button id="submit" label="Submit" click="handleSubmit(event)"/>
+	
+	
+	<!-- OUTPUT AREA -->
+	<mx:VBox id="resultsPane" width="850">		
+		<mx:DataGrid id="adKeywordResults" dataProvider="{model.adKeywordsVO}" 
+			right="0" left="0" bottom="0" top="0" alternatingItemColors="[#FFFFFF, #f2eaf4]">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Id" dataField="id"/>
+				<mx:DataGridColumn headerText="Group Id" dataField="groupId"/>
+				<mx:DataGridColumn headerText="Match Type" dataField="matchType"/>
+				<mx:DataGridColumn headerText="Status" dataField="status"/>
+				<mx:DataGridColumn headerText="AdVendor Status" dataField="adVendorStatus"/>
+				<mx:DataGridColumn headerText="Keyword Text" dataField="keywordText"/>
+				<mx:DataGridColumn headerText="DestinationUrl" dataField="destinationUrl"/>
+				<mx:DataGridColumn headerText="Max CPC" dataField="maxCpc"/>
+				<mx:DataGridColumn headerText="Min CPC" dataField="minCpc"/>
+				<mx:DataGridColumn headerText="Negative Match" dataField="negativeMatch"/>
+				<mx:DataGridColumn headerText="VendorPolicyExemptionRequest" dataField="vendorPolicyExemptionRequest"/>
+				<mx:DataGridColumn headerText="PublishedDate" dataField="publishedDate"/>
+				<mx:DataGridColumn headerText="Vendor Paused Flag" dataField="vendorPaused"/>
+				<mx:DataGridColumn headerText="CreatedDate" dataField="createdDate"/>
+				<mx:DataGridColumn headerText="ModifiedDate" dataField="modifiedDate"/>
+				<mx:DataGridColumn headerText="CreatedBy" dataField="createdBy"/>
+				<mx:DataGridColumn headerText="ModifiedBy" dataField="modifiedBy"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+
+</mx:VBox>

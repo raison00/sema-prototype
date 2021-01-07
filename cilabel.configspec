@@ -1,0 +1,6 @@
+# [CC_PROJECT - View Profile Config Spec Changed To Point To The Continuous Integration Label
+
+element * CHECKEDOUT
+element \SEMA\... RELEASE_1.CI
+
+# CC_PROJECT]

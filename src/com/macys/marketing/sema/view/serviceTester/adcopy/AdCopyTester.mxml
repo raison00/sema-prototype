@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:adcopy="com.macys.marketing.sema.view.serviceTester.adcopy.*"
+	width="850" height="650">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			public function serviceButtonsHandler(event:ItemClickEvent) :void {
+				adCopyTesterViewStack.selectedIndex = event.index;
+			}
+						
+		]]>
+	</mx:Script>
+	
+	
+	<mx:ButtonBar itemClick="serviceButtonsHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>get AllAdCopy</mx:String>
+				<mx:String>get AdCopyList</mx:String>
+				<mx:String>get AdCopyStats</mx:String>
+				<mx:String>put AdCopyList</mx:String>
+				<mx:String>replicate AdCopy</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+		
+	</mx:ButtonBar>
+	
+	
+	<mx:ViewStack id="adCopyTesterViewStack" width="850" height="650">
+		<mx:Canvas id="getAllAdCopy">
+			<adcopy:GetAllAdCopyTester id="getAllAdCopyTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdCopyList">
+			<adcopy:GetAdCopyListTester id="getAdCopyListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdCopyStats">
+			<adcopy:GetAdCopyStatsTester id="getAdCopyStatsTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="putAdCopyList">
+			<adcopy:PutAdCopyListTester id="putAdCopyListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="replicateAdCopy" width="850" height="650">
+			<adcopy:ReplicateAdCopyTester id="replicateAdCopyTesterInstance"/>
+		</mx:Canvas>
+		
+		
+	</mx:ViewStack>
+	
+</mx:VBox>

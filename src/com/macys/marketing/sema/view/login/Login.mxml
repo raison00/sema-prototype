@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	 xmlns:flexlib="http://code.google.com/p/flexlib/">
+	 
+	 <mx:Script>
+	 	<![CDATA[
+	 		import com.macys.marketing.sema.model.SemaUser;
+	 		import com.macys.marketing.sema.model.SEMAModelLocator;
+	 		
+	 		private var model:SEMAModelLocator = SEMAModelLocator.getInstance();
+	 		
+	 		public function handleButtonClick(e:MouseEvent):void {
+			
+				var tmpUser : SemaUser = model.userRegistry[this.uname.text];
+				
+				if ( (tmpUser != null) && (tmpUser.password == this.pwd.text)) {
+					model.semaUser = tmpUser;
+					model.enableAppOrLogin = SEMAModelLocator.ENABLE_MAIN_APP_PAGE;
+					model.loginRequired = false;
+		 		} else {
+		 			this.loginFaultText.visible=true;	
+				}
+			}//end handleButtonClick()
+
+	 		
+	 	]]>
+	 </mx:Script>
+	 	
+	 
+	<mx:Panel id="login" width="265" title="Login Form" horizontalAlign="center">
+	    <mx:Text id="loginFaultText" text="Invalid Login. Please Try Again" selectable="false" color="red" fontSize="12" fontFamily="Verdana" visible="false"/>
+	    <mx:Panel id="canvas" width="100%">
+	        <flexlib:PromptingTextInput id="uname" prompt="username" x="50" y="35" tabIndex="1"/>
+	        <flexlib:PromptingTextInput id="pwd" prompt="password" x="50" y="75" displayAsPassword="true" tabIndex="2"/>
+	        <mx:Button label="Login" id="loginBtn" x="158" y="115" tabIndex="3" click="handleButtonClick(event)"/>
+	    </mx:Panel>
+	</mx:Panel>
+	
+</mx:Canvas>

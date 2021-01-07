@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"  
+	initialize="init(event)">                 
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.TreeEvent;
+			import mx.events.CloseEvent;
+			import com.macys.marketing.sema.ReplicateEntity;
+			import com.macys.marketing.sema.ReplicateAdGroup;
+			import com.macys.marketing.sema.ReplicateAdCopy;
+			import mx.core.Application;
+			import mx.managers.DragManager;
+			import mx.controls.Alert;
+			import mx.collections.IList;
+			import mx.events.DragEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.macys.marketing.sema.event.adgroup.ReplicateAdGroupEvent;
+			import com.macys.marketing.sema.model.SEMAModelLocator;
+			import mx.events.ItemClickEvent;
+			
+			[Bindable]
+			public var clickEvent : Function;
+			
+			[Bindable]
+			public var model:SEMAModelLocator;
+					 
+			public var calDropIndex : int;
+			public var dropNode : XML;
+			public var originalSelectedNode : XML;
+			public var p:*;
+			private var replicateEntityObj : ReplicateEntity;
+					 
+			public function onTabChange(event:ItemClickEvent):void 
+			{
+				navStack.selectedIndex = event.index; 
+			} 
+ 			
+ 			public function init(event:Event):void {
+				model = SEMAModelLocator.getInstance();	
+						
+ 			}
+			
+			private function confirmAdGroup():void {
+				Alert.show("Are you sure you want to\ncopy this AdGroup?", "AdGroup Replication Confirmation", Alert.YES|Alert.NO, this, confirmAdGroupHandler,null ,Alert.NO);
+				
+			}
+			
+			private function confirmAdGroupHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					Application.application.wsReplicateEntityService.ReplicateAdGroupList.send( replicateEntityObj);
+				}
+			}
+			
+			private function confirmAdCopy():void {
+				Alert.show("Are you sure you want to\ncopy this AdCopy?", "AdCopy Replication Confirmation", Alert.YES|Alert.NO, this, confirmAdCopyHandler,null ,Alert.NO);
+						
+			}
+			
+			private function confirmAdCopyHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					Application.application.wsReplicateEntityService.ReplicateAdCopyList.send( replicateEntityObj);
+				}
+			}
+			
+			private function confirmAdKeyword():void {
+				Alert.show("Are you sure you want to\ncopy this Keyword?", "Keyword Replication Confirmation", Alert.YES|Alert.NO, this, confirmAdKeywordHandler,null ,Alert.NO);
+				
+			}
+			
+			private function confirmAdKeywordHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					Application.application.wsReplicateEntityService.ReplicateAdKeyWordList.send( replicateEntityObj);
+				}
+ 			}
+			
+			public function doDragDropIntoTree(event:DragEvent):void 
+	        {
+	         event.preventDefault();
+	         
+	            
+	            var dropTarget:Tree = Tree(event.target);
+	            
+	            if (event.dragSource.hasFormat("items"))
+	            {
+		             var items:Array = event.dragSource.dataForFormat("items") as Array;
+		             var i:Number;
+		             calDropIndex = treeList.calculateDropIndex(event);
+		             originalSelectedNode = treeList.selectedItem as XML;  
+	                 treeList.selectedIndex = calDropIndex;
+	                 dropNode = treeList.selectedItem as XML;                                
+		             
+		             
+		             if( treeList.dataDescriptor.isBranch(dropNode) ) {
+		                 p = dropNode;
+		                 calDropIndex = 0;
+		             } else {
+		                 p = dropNode.parent();
+		             }
+		             
+		             if(originalSelectedNode.@type == "campaign" && (dropNode.@type == "adGroup" || dropNode.@type == "campaign"))
+		             {
+		             	replicateEntityObj = new ReplicateEntity();
+		             	
+		             	for(i=0; i < items.length; i++) {
+	
+		             		replicateEntityObj.EntityId = items[i].Id;
+		             		replicateEntityObj.DestinationParentId = XML(p).@campaignID;
+		             		
+							confirmAdGroup();		                    
+		                }
+		                }
+		             else if(originalSelectedNode.@type == "adGroup" && dropNode.@type == "adGroup" && Application.application.tabMain.selectedIndex == 2)
+		             {
+		             	replicateEntityObj = new ReplicateEntity();
+		             	
+		             	for(i=0; i < items.length; i++) {
+		             		if(originalSelectedNode.@groupID != XML(dropNode).@groupID)
+		             		{
+		             		replicateEntityObj.EntityId = items[i].Id;
+		             		replicateEntityObj.DestinationParentId = XML(dropNode).@groupID;
+			             		confirmAdCopy();
+		             		}
+		             		else
+		             		{
+		             			Alert.show("Ad Copies can not be copied to the same AdGroup");
+		             			
+		             		}
+		             		
+		             	}
+		             	
+		             }
+		             else if(originalSelectedNode.@type == "adGroup" && dropNode.@type == "adGroup" && Application.application.tabMain.selectedIndex == 1)
+		             {
+		             	replicateEntityObj = new ReplicateEntity();
+		             	
+		             	for(i=0; i < items.length; i++) {
+		             		
+		             		if(originalSelectedNode.@groupID != XML(dropNode).@groupID)
+		             {
+		             			
+			             		replicateEntityObj.EntityId = items[i].Id;
+			             		replicateEntityObj.DestinationParentId = XML(dropNode).@groupID;
+			             		confirmAdKeyword();
+		             	
+		             }
+		             		else
+		             {
+		             			Alert.show("Ad Keywords can not be copied to the same AdGroup");
+		             			
+		             		}
+		             		
+		             	}
+		             }
+		             else
+		             {
+		             	Alert.show("Please drop in a correct location");
+		             	
+		             }
+		             
+		             treeList.selectedItem = originalSelectedNode;
+		             
+	            }
+	        }
+        
+			// On drag enter into Tree
+			public function doDragEnterIntoTree(event:DragEvent):void 
+			{
+				event.preventDefault();
+				var dragInitiator:Tree=Tree(event.target);                
+				DragManager.acceptDragDrop(dragInitiator); 
+				DragManager.showFeedback(DragManager.COPY);
+			}
+			
+			/**
+			 * This will call if a item is clicked in a tree node. This will call the item loading event.
+			 * 
+			 * @param event TreeEvent occured from by clicking on the arrow.
+			 * @author Zone24x7
+			 **/
+			public function loadTreeNodeChildren(event : Event) : void
+			{
+				//Fixme  : Calling the application context is not a good idea. This should wipe out when 
+				// we do the refactoring.
+				Application.application.onTreeClick(event);
+			}
+			
+			/**
+			 * This will call if the arrow is clicked in a tree node. This will call the item loading event.
+			 * 
+			 * @param event TreeEvent occured from by clicking on the arrow.
+			 * @author Zone24x7
+			 **/
+			public function doOpenTreeNode(event : TreeEvent) : void
+			{
+				if (event.opening)
+				{
+					Tree(event.target).selectedItem = event.item;
+					loadTreeNodeChildren(event);
+				}
+			}
+		]]>
+	</mx:Script>
+
+	<mx:XMLList id="treeData">
+		<root label="SEMA" type="root" rootId="1">
+		</root>
+	</mx:XMLList>
+	
+	<mx:TabNavigator id="navStack" height="100%" width="250" horizontalGap="5" paddingLeft="0" paddingTop="0">
+		<mx:VBox label="Navigation" id="navTab" width="250" height="100%">
+			<mx:Tree dragEnter="doDragEnterIntoTree(event);" dragDrop="doDragDropIntoTree(event);" 
+				width="100%" height="100%" labelField="@label" showRoot="true" backgroundAlpha="0.0" 
+				id="treeList" dataProvider="{this.treeData}"
+				verticalScrollPolicy="auto" horizontalScrollPolicy="on"
+				itemOpening="doOpenTreeNode(event)" itemClick="loadTreeNodeChildren(event)" />
+		</mx:VBox> 
+		<mx:Canvas label="Global Tools" id="toolsTab">
+				<mx:LinkButton label="Keyword Tool" id="keywordToolButton" click="clickEvent()"/> 
+		</mx:Canvas> 
+		
+	</mx:TabNavigator>
+	
+</mx:Canvas>

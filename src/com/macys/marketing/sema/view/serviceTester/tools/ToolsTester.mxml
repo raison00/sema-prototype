@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:tools="com.macys.marketing.sema.view.serviceTester.tools.*"
+	width="850" height="650">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			public function serviceButtonsHandler(event:ItemClickEvent) :void {
+				toolsTesterViewStack.selectedIndex = event.index;
+			}
+						
+		]]>
+	</mx:Script>
+	
+	
+	<mx:ButtonBar itemClick="serviceButtonsHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>generateKeywords</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+		
+	</mx:ButtonBar>
+	
+	
+	<mx:ViewStack id="toolsTesterViewStack" width="850" height="650">
+		<mx:Canvas id="generateKeywords">
+			<tools:GenerateKeywordsTester id="generateKeywordsTesterInstance"/>
+		</mx:Canvas>
+		
+				
+	</mx:ViewStack>
+	
+</mx:VBox>

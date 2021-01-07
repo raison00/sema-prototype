@@ -1,0 +1,9 @@
+# [CC_PROJECT - View Profile Config Spec
+
+element * CHECKEDOUT
+element \SEMA\... ...\main\build_metadata\LATEST
+element \SEMA\... ...\sema_rel_1_0_proj_base\LATEST
+element \SEMA\... \main\LATEST -mkbranch sema_rel_1_0_proj_base
+element * \main\LATEST
+
+# CC_PROJECT]

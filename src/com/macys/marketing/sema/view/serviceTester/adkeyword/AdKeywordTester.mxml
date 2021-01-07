@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:adkeyword="com.macys.marketing.sema.view.serviceTester.adkeyword.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			public function serviceButtonsHandler(event:ItemClickEvent) :void {
+				adKeywordTesterViewStack.selectedIndex = event.index;
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:ButtonBar itemClick="serviceButtonsHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>get AllAdKeyword</mx:String>
+				<mx:String>get AdKeywordList</mx:String>
+				<mx:String>get AdKeywordStats</mx:String>
+				<mx:String>put AdKeywordList</mx:String>
+				<mx:String>replicate AdKeyword</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+		
+	</mx:ButtonBar>
+	
+	<mx:ViewStack id="adKeywordTesterViewStack" width="100%">
+		<mx:Canvas id="getAllAdKeyword">
+	 		<adkeyword:GetAllAdKeywordTester id="getAllAdKeywordTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdKeywordList">
+			<adkeyword:GetAdKeywordListTester id="getAdKeywordListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="getAdKeywordStats">
+			<adkeyword:GetAdKeywordStatsTester id="getAdKeywordStatsTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="putAdKeywordList">
+			<adkeyword:PutAdKeywordListTester id="putAdKeywordListTesterInstance"/>
+		</mx:Canvas>
+		<mx:Canvas id="replicateAdKeyword">
+			<adkeyword:ReplicateAdKeywordTester id="replicateAdKeywordTesterInstance"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+	
+</mx:VBox>

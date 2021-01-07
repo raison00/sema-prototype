@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Portfolio Group Summary" 
+	paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+	<mx:Canvas width="100%" height="50">
+		
+		<mx:Button label="Save" width="105" height="35" color="#0B333C" id="btnSavePortfolioGroup" 
+			labelPlacement="right"							
+			icon="@Embed('../icons/save.png')"
+		    enabled="true" tabIndex="3" />		
+		<mx:Button label="Cancel" width="105" height="35" color="#0B333C" id="btnCancelPortfolioGroup" 
+			labelPlacement="right" x="123" 							
+		    enabled="true" tabIndex="4" />
+		<mx:Button label="Edit" width="105" height="35" color="#0B333C" id="btnEditPortfolioGroup" 
+			labelPlacement="right" x="203" 							
+		    enabled="true" tabIndex="2" />
+		<mx:Button label="Add Portfolio" width="185" height="35" id="btnAddPortfolio" icon="@Embed('../icons/new.png')" fillAlphas="[1.0, 1.0]" fillColors="[#ABB8F7, #D3D9F7]" enabled="true" tabIndex="1" />
+			
+	</mx:Canvas>
+	
+		<mx:Panel y="60" width="100%" height="100%" layout="absolute" id="pnlPortfolioGroupSummary" title="Summary">
+
+					<mx:Label x="20" y="19" text="Portfolio Group Name *" width="149" id="lblPortfolioGroupName" fontWeight="bold"/>
+			<mx:Label x="20" y="66" text="Description *" width="130" id="lblPortfolioGroupDescription" fontWeight="bold"/>
+			<mx:Label x="20" y="130" text="Status" width="130" id="lblPortfolioGroupStatus" fontWeight="bold"/>
+		
+			<mx:TextInput x="158" y="15" editable="false" id="txtPortfolioGroupName" maxChars="50" tabIndex="5" width="320" backgroundDisabledColor="#FFFFFF"/>
+			<mx:TextArea x="158" y="62" id="txtPortfolioGroupDescription" maxChars="1024" tabIndex="6" width="320" editable="false" backgroundDisabledColor="#FFFFFF"/>
+			<mx:ComboBox x="158" y="126" cornerRadius="0" id="cmbPortfolioGroupStatus" visible="true" editable="false" selectedIndex="0" width="160" tabIndex="7">
+			<mx:dataProvider>
+							<mx:String>Enabled</mx:String>
+                <mx:String>Paused</mx:String>
+							<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+			</mx:ComboBox>
+		</mx:Panel>	
+</mx:VBox>

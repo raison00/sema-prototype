@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<UserRegistry>
+	<LoginFunctionality enabled="false"/>
+	
+	<Users>
+
+<!-- Business -->
+		<User>
+			<FirstName>Nolan</FirstName>
+			<LastName>Lew</LastName>
+			<UserName>nlew</UserName>
+			<Password>aq1sw2</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Shruti</FirstName>
+			<LastName>Khatod</LastName>
+			<UserName>skhatod</UserName>
+			<Password>de3fr4</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Curt</FirstName>
+			<LastName>Weaver</LastName>
+			<UserName>cweaver</UserName>
+			<Password>gt5hy6</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Cheryl</FirstName>
+			<LastName>DeGrasse</LastName>
+			<UserName>cdegrasse</UserName>
+			<Password>ju7hy6</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Maryam</FirstName>
+			<LastName>Pessaran</LastName>
+			<UserName>mpessaran</UserName>
+			<Password>nhybgt</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Candice</FirstName>
+			<LastName>Wong</LastName>
+			<UserName>cwong</UserName>
+			<Password>cdexsw</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Rana</FirstName>
+			<LastName>Hannoush</LastName>
+			<UserName>rhannoush</UserName>
+			<Password>mjunbe</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Klarissa</FirstName>
+			<LastName>Marenitch</LastName>
+			<UserName>kmarenitch</UserName>
+			<Password>7hg5fd</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Caroline</FirstName>
+			<LastName>Fox</LastName>
+			<UserName>cfox</UserName>
+			<Password>ki7hy5</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Alexander</FirstName>
+			<LastName>Leverant</LastName>
+			<UserName>aleverant</UserName>
+			<Password>nhygf4</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		
+<!-- Development -->	
+
+
+
+
+
+
+
+		
+		
+		<User>
+			<FirstName>Alexi</FirstName>
+			<LastName>Bordei</LastName>
+			<UserName>abordei</UserName>
+			<Password>mn5nb7</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>David</FirstName>
+			<LastName>Frank</LastName>
+			<UserName>dfrank</UserName>
+			<Password>lo9g45</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Denis</FirstName>
+			<LastName>Kamotsky</LastName>
+			<UserName>dkamotsky</UserName>
+			<Password>hjn53d</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Hari</FirstName>
+			<LastName>Nagasundaram</LastName>
+			<UserName>hnagasundaram</UserName>
+			<Password>bfmd45</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Janos</FirstName>
+			<LastName>Mucsi</LastName>
+			<UserName>jmucsi</UserName>
+			<Password>mbk4fd</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Jaya</FirstName>
+			<LastName>Oztanir</LastName>
+			<UserName>joztanir</UserName>
+			<Password>dns32s</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Leonard</FirstName>
+			<LastName>Stofsky</LastName>
+			<UserName>lstofsky</UserName>
+			<Password>xswfr3</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Manosha</FirstName>
+			<LastName>Silva</LastName>
+			<UserName>msilva</UserName>
+			<Password>d3cws4</Password>
+			<Role>SEMA</Role>
+		</User>
+		
+		<User>
+			<FirstName>Manosha</FirstName>
+			<LastName>Silva</LastName>
+			<UserName>msilva</UserName>
+			<Password>d3cws4</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Rob</FirstName>
+			<LastName>Abbott</LastName>
+			<UserName>rabbott</UserName>
+			<Password>ac34sc</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Sam</FirstName>
+			<LastName>Chong</LastName>
+			<UserName>schong</UserName>
+			<Password>vds3ds</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Tona</FirstName>
+			<LastName>Podtchiyska</LastName>
+			<UserName>tpodtchiyska</UserName>
+			<Password>xcd5ds</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Vivek</FirstName>
+			<LastName>Sharma</LastName>
+			<UserName>vsharma</UserName>
+			<Password>dn3scs</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Yasin</FirstName>
+			<LastName>Pasha</LastName>
+			<UserName>yapasha</UserName>
+			<Password>cd3sas</Password>
+			<Role>SEMA</Role>
+		</User>
+		<User>
+			<FirstName>Yusuf</FirstName>
+			<LastName>Pasha</LastName>
+			<UserName>yupasha</UserName>
+			<Password>dv34sc</Password>
+			<Role>SEMA</Role>
+		</User>
+
+
+		
+		
+	</Users>
+			
+</UserRegistry>
+

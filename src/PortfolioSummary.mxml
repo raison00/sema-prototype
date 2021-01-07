@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Portfolio Summary" 
+	paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	<mx:Script>
+	 		<![CDATA[
+			  	import mx.collections.ArrayCollection;		  	
+	 			[Bindable] public var portfolioGroupsListData : ArrayCollection;  	
+	 			
+	 		]]>
+	</mx:Script>
+	 	
+	<mx:Canvas width="100%" height="50">
+		<mx:Button x="10" y="3" label="Add Campaign" width="185" 
+			height="35" id="btnAddPortfolioSummaryAddCampaign" icon="@Embed('../icons/new.png')" 
+			fillAlphas="[1.0, 1.0]" fillColors="[#ABB8F7, #D3D9F7]" enabled="true" tabIndex="1"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnEditPortfolioSummary" labelPlacement="right" 
+			x="203"
+			cornerRadius="5" enabled="true" label="Edit" tabIndex="2"/>
+		<mx:Button y="3" label="Save" width="105" height="35" color="#0B333C" id="btnSavePortfolio" 
+			labelPlacement="right" x="10" 							
+			icon="@Embed('../icons/save.png')"
+		    enabled="true" tabIndex="3"/>
+		<mx:Button y="3" width="105" height="35" color="#0B333C" id="btnCancelPortfolioSummary" labelPlacement="right" 
+			x="123"
+			cornerRadius="5" enabled="true" label="Cancel" tabIndex="4"/>	
+	</mx:Canvas>
+		<mx:Panel y="60" width="100%" height="100%" layout="absolute" id="pnlPortfolioSummary" title="Summary">
+			<mx:Label x="20" y="19" text="Portfolio Name *" width="130" id="lblPortfolioName" fontWeight="bold"/>
+			<mx:Label x="20" y="66" text="Description *" width="200" id="lblDescriptin" fontWeight="bold"/>	
+			<mx:Label x="20" y="130" text="Status" width="112" id="lblStatus" fontWeight="bold"/>
+			<mx:Label x="20" y="142" text="Add To Profile Group" id="lblAddProfileGroup" fontWeight="bold" visible="false"/>
+			<mx:Label x="20" y="180" text="Portfolio Groups" id="lblPortfolioGroups" fontWeight="bold"  visible="false"/>			
+			<mx:TextInput x="158" y="15" editable="true" id="txtPortfolioName" tabIndex="5" maxChars="50" width="320" backgroundDisabledColor="#FFFFFF"/>
+			<mx:TextArea x="158" y="62" editable="true" id="txtDescription" tabIndex="6" maxChars="1024" height="44" width="320" backgroundDisabledColor="#FFFFFF"/>
+			<mx:ComboBox x="158" y="126" cornerRadius="0" id="cmbCampaignStatus" visible="true" editable="false" selectedIndex="0" width="160" tabIndex="7">
+			<mx:dataProvider>
+					<mx:String>Enabled</mx:String>
+							<mx:String>Paused</mx:String>
+					<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+			</mx:ComboBox>
+			<mx:CheckBox x="158" y="140" id="chkAddPofileGroup" width="24" tabIndex="7" visible="false"/>	
+		</mx:Panel>
+	<!--<mx:HBox width="100%" height="50%" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:VBox width="150" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalGap="15" horizontalAlign="left" paddingRight="25">
+			<mx:Label text="Portfolio Name *" width="130" id="lblPortfolioName" fontWeight="bold"/>
+			<mx:Label text="Description *" width="200" id="lblDescriptin" fontWeight="bold"/>	
+			<mx:Label text="Status" width="112" id="lblStatus" fontWeight="bold"/>
+			<mx:Label text="Add To Profile Group" id="lblAddProfileGroup" width="200" fontWeight="bold" visible="false"/>
+		</mx:VBox>
+		<mx:VBox width="100%" height="100%" horizontalScrollPolicy="off" verticalGap="15" verticalScrollPolicy="off" horizontalAlign="left">
+			<mx:Label text="Portfolio Groups" id="lblPortfolioGroups" fontWeight="bold"  visible="false"/>			
+			<mx:TextInput editable="true" id="txtPortfolioName" tabIndex="1" maxChars="50" width="320" backgroundDisabledColor="#FFFFFF"/>
+			<mx:TextArea editable="true" id="txtDescription" tabIndex="2" maxChars="1024" height="44" width="320" backgroundDisabledColor="#FFFFFF"/>
+			<mx:ComboBox cornerRadius="0" id="cmbCampaignStatus" visible="true" editable="false" selectedIndex="0" width="160" tabIndex="3">
+			<mx:dataProvider>
+					<mx:String>Enabled</mx:String>
+							<mx:String>Paused</mx:String>
+					<mx:String>Deleted</mx:String>
+			</mx:dataProvider>
+			</mx:ComboBox>
+			<mx:CheckBox id="chkAddPofileGroup" width="24" tabIndex="7" visible="false"/>	
+		</mx:VBox>
+	</mx:HBox>-->
+	
+</mx:Canvas>
+
